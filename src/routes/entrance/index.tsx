@@ -23,7 +23,7 @@ const createCaptchaData = (remoteIp: string, serverData: AfterServerData, histor
 		remoteIp: historyData?.remoteIp || remoteIp,
 		email: serverData.data?.email as string,
 		captcha: !!(serverData.code === 404 || (historyData?.attempts && (historyData?.attempts as number) % 2 === 0)),
-		action: serverData.code === 404 ? '/api/v0/entrance/sign-up' : '/api/v0/entrance/sign-in',
+		action: serverData.data?.action as string || '/api/v0/entrance/sign-up',
 		difficulty: historyData?.difficulty || serverData.code === 404 ? 1 : 1,
 		challenge: encodeBase64Url(crypto.getRandomValues(new Uint8Array(24))),
 		attempts: historyData?.attempts || 1,
@@ -71,7 +71,7 @@ export default function Entrance({ data }: PageProps<AfterServerData>): JSX.Elem
 								<h3>{data.message}</h3>
 								<p>Hello {(data.data?.email as string).split('@')[0]}, please check your inbox or spam folder.</p>
 							</header>
-							<form method='POST' action={`${data?.data?.action as string}?resend=${data.data?.ulid}`}>
+							<form method='POST' action={`/api/v0/entrance/sign-in?resend=${data.data?.ulid}`}>
 								<input type='hidden' name='email' value={data.data?.email as string} />
 								<button class='button-primary' type='submit'>Resend</button>
 							</form>

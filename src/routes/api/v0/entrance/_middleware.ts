@@ -1,3 +1,4 @@
+import SystemKv from '../../../../helpers/utils/db.ts'
 import data from '../../../../helpers/utils/middleware/data.ts'
 import responder from '../../../../helpers/utils/middleware/responder.ts'
 import captchaPow from '../../../../helpers/utils/middleware/captcha-pow.ts'
@@ -14,6 +15,7 @@ const SUPPORTED_CT: readonly string[] = ['application/x-www-form-urlencoded']
 type SupportedContentType = typeof SUPPORTED_CT[number]
 
 export async function handler(request: Request, ctx: FreshContext): Promise<Response> {
+	const system_id: string = SystemKv.id(ctx)
 	const contentType: SupportedContentType | null = request.headers.get('Content-Type') as SupportedContentType | null
 
 	switch (request.method) {
@@ -42,14 +44,15 @@ export async function handler(request: Request, ctx: FreshContext): Promise<Resp
 
 				const validation: ReturnType<typeof data> = validator(validationSchema, payload)
 
-				if (validation.success && validation.data) {
-					validation.data.action = ctx.url.pathname
-					Object.assign(validation, await captchaPow(validation) as ServerData)
+				if (validation.success && validation.data?.email) {
+					Object.assign(validation, await captchaPow(system_id, validation))
 
-					if (validation.success && validation.data?.email) {
+					if (validation.success) {
+						ctx.state.remoteIp = validation.data.remoteIp
 						ctx.state.email = validation.data.email
 						ctx.state.resend = ctx.url.searchParams.get('resend')
-						Object.assign(validation, await (await ctx.next()).json() as ServerData)
+
+						Object.assign(validation, await (await ctx.next()).json())
 					}
 				}
 

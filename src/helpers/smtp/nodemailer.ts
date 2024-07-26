@@ -28,10 +28,10 @@ const send = (mailOptions: Mail.Options): Promise<boolean> => {
 	return new Promise((resolve, _reject): void => {
 		transporter.sendMail(mailOptions, (error: Error | null, info: SentMessageInfo) => {
 			if (error) {
-				console.log('sendMail', error, 'error')
+				console.log(error)
 				resolve(false)
 			} else {
-				console.log('sendMail', info, 'info')
+				console.log(info)
 				resolve(true)
 			}
 		})

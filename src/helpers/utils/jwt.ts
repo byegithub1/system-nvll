@@ -1,18 +1,7 @@
 import SystemKv from './db.ts'
-import UserSchema from '../../schemas/user.schema.ts'
 
 import { FreshContext } from '$fresh/server.ts'
-import { create, getNumericDate, Header, Payload, verify } from 'djwt'
-
-declare global {
-	interface JwtToken extends Payload {
-		userId: string
-		authType: string
-		exp: number
-		aud: string
-		iss: string
-	}
-}
+import { create, getNumericDate, Header, verify } from 'djwt'
 
 const JWT_CONFIG: Record<string, unknown> = {
 	algorithm: 'HS512' as AlgorithmIdentifier,
@@ -96,13 +85,13 @@ export async function verifyToken(request: Request, ctx: FreshContext): Promise<
 			return new Response(JSON.stringify({ error: decodedToken.message }), { status: 401 })
 		}
 
-		const { userId, authType } = decodedToken as JwtToken
+		const { email, authType } = decodedToken as JwtToken
 		if (authType !== 'access') {
 			return new Response(JSON.stringify({ error: '-ERR invalid token type' }), { status: 401 })
 		}
 
-		const user: UserSchema | null = await UserSchema.findOne({ userId })
-		if (!user) {
+		const user: Deno.KvEntryMaybe<unknown> = await SystemKv.get(['system_nvll', 'users', email])
+		if (!user.value) {
 			return new Response(JSON.stringify({ error: '-ERR forbidden access' }), { status: 403 })
 		}
 

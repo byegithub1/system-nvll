@@ -39,12 +39,12 @@ export default class SystemKv {
 
 	/**
 	 * @description Asynchronously lists all keys in the database with the specified prefix.
-	 * @param {string} prefix - The prefix used to filter the keys.
+	 * @param {string[]} prefix - The prefix used to filter the keys.
 	 * @returns {Deno.KvListIterator<string>} - A Promise that resolves to an iterator of strings,
 	 * where each string is a key in the database that matches the specified prefix.
 	 */
-	static list(prefix: string): Deno.KvListIterator<string> {
-		return kv.list<string>({ prefix: [prefix] })
+	static list(prefix: string[]): Deno.KvListIterator<string> {
+		return kv.list<string>({ prefix })
 	}
 
 	/**

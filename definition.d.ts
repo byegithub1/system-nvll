@@ -1,5 +1,4 @@
-import { Document } from 'mongoose'
-import { ScalarType } from '@ooneex/validation'
+import { Payload } from 'djwt'
 import { AppContext } from './src/routes/_middleware.ts'
 
 declare global {
@@ -22,9 +21,25 @@ declare global {
 		code: number
 		type?: string
 		message?: string
-		data?: Record<string, ScalarType>
-		errors?: Record<string, ScalarType>
+		data?: Record<string, unknown>
+		errors?: Record<string, unknown>
 		feedback?: string
+	}
+
+	interface JwtToken extends Payload {
+		email: string
+		authType: string
+		exp: number
+		aud: string
+		iss: string
+	}
+
+	interface CaptchaWorkerData {
+		challenge: string
+		difficulty: number
+		timestamp: number
+		nonce: string
+		hash?: string
 	}
 
 	interface SystemSchema {
@@ -34,7 +49,8 @@ declare global {
 		}
 	}
 
-	interface UserSchema extends Document {
+	interface UserSchema {
+		ulid: string
 		username: string
 		email: string
 		im_address: string
@@ -45,7 +61,7 @@ declare global {
 			b: number
 			reservation: {
 				rsv: string
-				createdAt: Date
+				created_at: number
 			}
 		}
 		messages: {
@@ -59,10 +75,9 @@ declare global {
 		is_active: boolean
 		access_token: string
 		refresh_token: string
-		ip: string
-		createdAt?: Date
-		updatedAt?: Date
-		isValidEmail(email: string): boolean
+		remoteIp: string
+		created_at: number
+		updated_at: number
 	}
 
 	interface CaptchaSchema {
@@ -77,4 +92,6 @@ declare global {
 		timestamp: number
 		result?: string
 	}
+
+	type TxEmailTemplateData = Record<string, unknown>
 }

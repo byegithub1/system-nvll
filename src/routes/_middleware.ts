@@ -1,14 +1,10 @@
-import mongoose from 'mongoose'
 import handleWebSocket from '../helpers/socket/index.ts'
 
 import SystemKv, { ulid } from '../helpers/utils/db.ts'
 
-import { load } from '$std/dotenv/mod.ts'
 import { FreshContext } from '$fresh/server.ts'
 import { encodeHex } from '$std/encoding/hex.ts'
 import { sentinel } from '../helpers/utils/sentinel.ts'
-
-const env: Record<string, string> = await load()
 
 export class AppContext {
 	public readonly system_id: string
@@ -57,9 +53,6 @@ export class AppContext {
 
 		console.log('System NVLL initialization...')
 		try {
-			await mongoose.connect(env['APP_DATABASE_URL'] as string)
-			console.log('+OK database established')
-
 			const system: Deno.KvCommitResult = await SystemKv.set(['system_nvll', 'systems', this.system_id], {
 				ulid: ulid(),
 				keys: {
@@ -70,7 +63,7 @@ export class AppContext {
 
 			if (system.ok) console.log('+OK hmac sha-512 key rotated')
 
-			console.log('+OK')
+			console.log('+OK database established')
 
 			await new Promise((resolve) => setTimeout(resolve, 2000))
 

@@ -1,7 +1,4 @@
-import { load } from '$std/dotenv/mod.ts'
 import { Cookie, setCookie } from '$std/http/cookie.ts'
-
-const env: Record<string, string> = await load()
 
 /**
  * @description Sends a response based on the provided content type and server data.
@@ -21,7 +18,6 @@ export default function responder(contentType: string, data: ServerData, pathnam
 		setCookie(headers, {
 			name: 'data',
 			value: encodeURIComponent(JSON.stringify(responseData)),
-			domain: env['APP_ENV'].startsWith('dev') ? 'localhost' : 'nvll.me',
 			path: pathname,
 			sameSite: 'Strict' as Cookie['sameSite'],
 			secure: true,

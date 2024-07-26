@@ -9,7 +9,7 @@ import { dirname, fromFileUrl, join } from '$std/path/mod.ts'
  */
 const verifyRegister = async (payload: { username: string; email: string; token: string }): Promise<string> => {
 	const currentDir: string = dirname(fromFileUrl(import.meta.url))
-	const templatePath: string = join(currentDir, '..', 'templates', 'new-user.hbs')
+	const templatePath: string = join(currentDir, '..', 'sign-up-tx', 'template.hbs')
 	const html: string = await Deno.readTextFile(templatePath)
 	const template: HelperDelegate = handlebars.compile(html)
 	const url: string = `https://system.nvll.me/api/v0/user/verify/${payload.token}`

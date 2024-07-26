@@ -1,45 +1,43 @@
 import SystemKv from '../db.ts'
 import data from '../middleware/data.ts'
 
-declare global {
-	interface CaptchaWorkerData {
-		challenge: string
-		difficulty: number
-		timestamp: number
-		nonce: string
-		hash?: string
-	}
-}
+import { encodeHex } from '$std/encoding/hex.ts'
 
 interface CaptchaSolution {
 	valid: boolean
 	hash?: string
 }
 
-export default async function captchaPow(payload: ServerData): Promise<ServerData> {
+/**
+ * @description Validates the captcha for a given request and updates the captcha data in the database.
+ * @param {string} system_id - The system ID associated with the request.
+ * @param {ServerData} payload - The payload containing the captcha data.
+ * @return {Promise<ServerData>} A Promise that resolves to a ServerData object with the validation result.
+ */
+export default async function captchaPow(system_id: string, payload: ServerData): Promise<ServerData> {
 	const postRequestData: ServerData = { ...payload }
 	const request: CaptchaSchema = payload.data as unknown as CaptchaSchema
+
+	const emailHash: string = encodeHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${system_id}:${request.email}`)))
+	const user: Deno.KvEntryMaybe<unknown> = await SystemKv.get(['system_nvll', 'users', emailHash])
 
 	const history: Deno.KvEntryMaybe<unknown> = await SystemKv.get(['system_nvll', 'captchas', request.remoteIp])
 	const historyData: CaptchaSchema = history.value as CaptchaSchema
 
 	const calculatedData: CaptchaSchema = { ...historyData, ...request }
-
-	const signUpAction: boolean = calculatedData.action.includes('entrance/sign-up')
-	const signInAction: boolean = calculatedData.action.includes('entrance/sign-in')
-
-	const requiredCaptcha: boolean = signUpAction || (signInAction && calculatedData.attempts % 2 === 0)
+	const requiredCaptcha: boolean = !user.value || (user.value && calculatedData.attempts % 2 === 0)
 
 	if (requiredCaptcha && (!calculatedData.captcha || !calculatedData.result)) {
 		return data({
 			...postRequestData,
 			success: false,
-			code: signUpAction ? 404 : 429,
+			code: !user.value ? 404 : 429,
 			message: '-ERR captcha required',
 			errors: { captcha: 'captcha required' },
 			data: {
 				...calculatedData,
 				captcha: true,
+				action: !user.value ? '/api/v0/entrance/sign-up' : '/api/v0/entrance/sign-in',
 			},
 		})
 	}
@@ -69,6 +67,7 @@ export default async function captchaPow(payload: ServerData): Promise<ServerDat
 	}
 
 	calculatedData.attempts = (calculatedData.attempts || 0) + 1
+
 	await SystemKv.set(['system_nvll', 'captchas', request.remoteIp], calculatedData)
 
 	return data({
@@ -93,7 +92,6 @@ async function verifySolution(result: string, historyData: CaptchaSchema): Promi
 	try {
 		const { timestamp, challenge, difficulty }: CaptchaSchema = historyData
 		const { nonce, hash }: CaptchaWorkerData = JSON.parse(atob(result as string))
-
 		// Verify the hash
 		const encoder: TextEncoder = new TextEncoder()
 		const data: Uint8Array = encoder.encode(`${timestamp}:${challenge}${nonce}`)
