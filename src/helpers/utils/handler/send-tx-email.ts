@@ -5,7 +5,7 @@ import createToken from './create-token.ts'
 
 import { load } from '$std/dotenv/mod.ts'
 
-const env: Record<string, string> = await load()
+const env: Record<string, string> = await load({ envPath: '.env', export: true })
 
 // EmailTemplate interface with generic constraint
 interface EmailTemplate<T extends TxEmailTemplateData = TxEmailTemplateData> {

@@ -5,7 +5,7 @@ Privacy-oriented public service that emphasizes total anonymity. Perfect balance
 ## Addresses
 
 - **Live** [nvll.me]() (not ready)
-- **Preview** [system-nvll.deno.dev](https://system-nvll.deno.dev)
+- **Preview** [dev-system.nvll.me](https://dev-system.nvll.me)
 
 [![Made with Fresh](https://fresh.deno.dev/fresh-badge.svg)](https://fresh.deno.dev)
 

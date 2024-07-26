@@ -1,18 +1,16 @@
-import { load } from '$std/dotenv/mod.ts'
 import { monotonicFactory, ULID } from 'ulid'
 import { FreshContext } from '$fresh/server.ts'
 
-declare global {
-	type Schemas = SystemSchema | UserSchema | CaptchaSchema
-}
-
-const env: Record<string, string> = await load()
-const url: string | undefined = env['APP_ENV'].startsWith('dev') ? env['DENO_KV_ACCESS_URL'] : undefined
-const kv: Deno.Kv = await Deno.openKv(url)
+const kv: Deno.Kv = await Deno.openKv()
 export const ulid: ULID = monotonicFactory()
 
 export default class SystemKv {
-	static id(ctx: FreshContext) {
+	/**
+	 * @description Retrieves the system ID from the given FreshContext.
+	 * @param {FreshContext} ctx - The FreshContext object.
+	 * @return {string} The system ID.
+	 */
+	static id(ctx: FreshContext): string {
 		const context: SystemState['context'] = ctx.state.context as SystemState['context']
 		return context.system_id
 	}

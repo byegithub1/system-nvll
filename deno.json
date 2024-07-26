@@ -6,31 +6,17 @@
 		"manifest": "deno task cli manifest $(pwd)",
 		"dev": "deno run -A --unstable-kv --watch=src/static/,src/routes/ src/dev.ts",
 		"build": "deno run -A --unstable-kv src/dev.ts build",
+		"docker:build": "docker build -t system-nvll .",
+		"deploy": "deno run -A --unstable-kv src/dev.ts build && deployctl deploy --prod --project=system-nvll",
 		"preview": "deno run -A --unstable-kv src/main.ts",
 		"update": "deno run -A -r https://fresh.deno.dev/update ."
 	},
 	"lint": {
-		"include": [
-			"**/*.ts",
-			"**/*.tsx"
-		],
-		"exclude": [
-			"**/_fresh/*",
-			"**/*.hbs"
-		],
+		"include": ["**/*.ts", "**/*.tsx"],
+		"exclude": ["**/_fresh/*", "**/*.hbs"],
 		"rules": {
-			"tags": [
-				"recommended",
-				"fresh"
-			],
-			"include": [
-				"no-unused-vars",
-				"no-var-requires",
-				"no-explicit-any",
-				"no-extraneous-class",
-				"no-non-null-assertion",
-				"ban-untagged-todo"
-			],
+			"tags": ["recommended", "fresh"],
+			"include": ["no-unused-vars", "no-var-requires", "no-explicit-any", "no-extraneous-class", "no-non-null-assertion", "ban-untagged-todo"],
 			"exclude": []
 		}
 	},
@@ -41,18 +27,10 @@
 		"semiColons": false,
 		"singleQuote": true,
 		"proseWrap": "preserve",
-		"include": [
-			"**/*.ts",
-			"**/*.tsx"
-		],
-		"exclude": [
-			"**/_fresh/*",
-			"**/*.hbs"
-		]
+		"include": ["**/*.ts", "**/*.tsx"],
+		"exclude": ["**/_fresh/*", "**/*.hbs"]
 	},
-	"exclude": [
-		"**/_fresh/*"
-	],
+	"exclude": ["**/_fresh/*"],
 	"imports": {
 		"$fresh/": "https://deno.land/x/fresh@1.6.8/",
 		"$std/": "https://deno.land/std@0.224.0/",
@@ -70,12 +48,7 @@
 		"ulid": "https://deno.land/x/ulid@v0.3.0/mod.ts",
 		"zod": "https://deno.land/x/zod@v3.23.8/mod.ts"
 	},
-	"compilerOptions": {
-		"types": [
-			"./definition.d.ts"
-		],
-		"jsx": "react-jsx",
-		"jsxImportSource": "preact"
-	},
-	"nodeModulesDir": false
+	"compilerOptions": { "types": ["./definition.d.ts"], "jsx": "react-jsx", "jsxImportSource": "preact" },
+	"nodeModulesDir": false,
+	"deploy": { "project": "c86c6599-942c-486e-9e40-84931bf51e86", "exclude": ["**/node_modules"], "include": [], "entrypoint": "src\\main.ts" }
 }

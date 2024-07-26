@@ -4,7 +4,7 @@ import nodemailer, { SentMessageInfo, Transporter } from 'nodemailer'
 
 import { load } from '$std/dotenv/mod.ts'
 
-const env: Record<string, string> = await load()
+const env: Record<string, string> = await load({ envPath: '.env', export: true })
 
 const transporter: Transporter<SentMessageInfo> = nodemailer.createTransport({
 	host: env['SMTP_HOSTNAME'] as string,

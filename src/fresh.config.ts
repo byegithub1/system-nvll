@@ -4,7 +4,7 @@ import { load } from '$std/dotenv/mod.ts'
 import { defineConfig } from '$fresh/server.ts'
 import { AppContext } from './routes/_middleware.ts'
 
-const env: Record<string, string> = await load()
+const env: Record<string, string> = await load({ envPath: '.env', export: true })
 
 await AppContext.initialize('0000256F-1EAA-7FFF-1FFF-FFFFFFFFFFFF')
 

@@ -42,6 +42,10 @@ declare global {
 		hash?: string
 	}
 
+	type TxEmailTemplateData = Record<string, unknown>
+
+	type Schemas = SystemSchema | UserSchema | CaptchaSchema
+
 	interface SystemSchema {
 		ulid: string
 		keys: {
@@ -92,6 +96,4 @@ declare global {
 		timestamp: number
 		result?: string
 	}
-
-	type TxEmailTemplateData = Record<string, unknown>
 }
