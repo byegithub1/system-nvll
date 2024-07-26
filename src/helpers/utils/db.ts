@@ -11,18 +11,18 @@ export default class SystemKv {
 	 * @return {string} The system ID.
 	 */
 	static id(ctx: FreshContext): string {
-		const context: SystemState['context'] = ctx.state.context as SystemState['context']
-		return context.system_id
+		return (ctx.state.context as SystemState['context']).system_id
 	}
 
 	/**
 	 * @description Asynchronously sets a value in the database using the specified key.
 	 * @param {Deno.KvKey} key - The key used to set the value.
 	 * @param {Schemas} value - The value to set.
-	 * @returns {Promise<Deno.KvCommitResult>} - A Promise that resolves to the result of the commit operation.
+	 * @param {number} [expireIn] - The optional expiration time in milliseconds.
+	 * @return {Promise<Deno.KvCommitResult>} - A Promise that resolves to the result of the commit operation.
 	 */
-	static async set(key: Deno.KvKey, value: Schemas): Promise<Deno.KvCommitResult> {
-		return await kv.set(key, value)
+	static async set(key: Deno.KvKey, value: Schemas, expireIn?: number): Promise<Deno.KvCommitResult> {
+		return await kv.set(key, value, { expireIn })
 	}
 
 	/**
@@ -32,7 +32,17 @@ export default class SystemKv {
 	 * with the specified key, or undefined if the key does not exist.
 	 */
 	static async get(key: Deno.KvKey): Promise<Deno.KvEntryMaybe<unknown>> {
-		return await kv.get<string>(key)
+		return await kv.get<Schemas>(key)
+	}
+
+	/**
+	 * @description Asynchronously retrieves multiple values from the database using the specified keys.
+	 * @param {Deno.KvKey[]} key - An array of keys used to retrieve the values.
+	 * @return {Promise<(Deno.KvEntryMaybe<unknown>)[]>} A Promise that resolves to an array of values associated with the specified keys,
+	 * or undefined if any of the keys do not exist.
+	 */
+	static async getMany(key: Deno.KvKey[]): Promise<(Deno.KvEntryMaybe<unknown>)[]> {
+		return await kv.getMany(key)
 	}
 
 	/**
