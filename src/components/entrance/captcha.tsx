@@ -1,7 +1,7 @@
-import BackButton from '../../islands/entrance/back-button.tsx'
+import IslandsCaptchForm from '../../islands/entrance/captcha-form.tsx'
+
 import { JSX } from 'preact'
 import { asset } from '$fresh/runtime.ts'
-import IslandsCaptchForm from '../../islands/entrance/captcha-form.tsx'
 
 interface Props {
 	props: AfterServerData
@@ -38,8 +38,9 @@ export default function Captcha({ props }: Props): JSX.Element {
 							)}
 					</header>
 					<IslandsCaptchForm props={props} />
-					<div class='back-wrapper'>
-						<BackButton />
+					<div className='alert-info mt-7' role='alert'>
+						<span className='font-bold'>HINT</span>&nbsp; Avoid forcing it. The difficulty level will increase each time a captcha is
+						successfully validated. If no captcha is generated and solved within 60 minutes, the difficulty will reset.
 					</div>
 				</div>
 			</section>

@@ -90,7 +90,10 @@ declare global {
 		email: string
 		captcha: boolean
 		action: string
-		difficulty: number
+		difficulty: {
+			signIn: number
+			signUp: number
+		}
 		challenge: string
 		attempts: number
 		timestamp: number

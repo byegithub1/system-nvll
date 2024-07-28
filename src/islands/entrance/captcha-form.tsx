@@ -41,7 +41,7 @@ const reducer = (state: State, action: Action): State => {
 	}
 }
 
-const useWorker = (challenge: string, difficulty: number, timestamp: number) => {
+const useWorker = (captchaData: CaptchaSchema) => {
 	const [state, dispatch] = useReducer(reducer, initialState)
 
 	const workerRef = useRef<Worker | null>(null)
@@ -53,9 +53,9 @@ const useWorker = (challenge: string, difficulty: number, timestamp: number) => 
 		startTimeRef.current = performance.now()
 		workerRef.current = new Worker(new URL('/workers/pow.js', import.meta.url).href, { type: 'module' })
 		workerRef.current.postMessage({
-			challenge,
-			difficulty,
-			timestamp,
+			challenge: captchaData.challenge,
+			difficulty: captchaData.action === '/api/v0/entrance/sign-up' ? captchaData.difficulty.signUp : captchaData.difficulty.signIn,
+			timestamp: captchaData.timestamp,
 			nonce: '0',
 		})
 
@@ -86,7 +86,7 @@ const useWorker = (challenge: string, difficulty: number, timestamp: number) => 
 		}
 
 		dispatch({ type: 'SET_STATE', payload: { findingSolution: true, message: '' } })
-	}, [challenge, difficulty, timestamp])
+	}, [captchaData])
 
 	useEffect(() => {
 		return () => {
@@ -101,12 +101,14 @@ const useWorker = (challenge: string, difficulty: number, timestamp: number) => 
 }
 
 export default function IslandsCaptchForm({ props }: Props): JSX.Element {
-	const { challenge, difficulty, timestamp, action } = useMemo(() => props?.data || {}, [props?.data])
-	const { state, dispatch, findNonce } = useWorker(challenge as string, difficulty as number, timestamp as number)
+	const captchaData: CaptchaSchema = useMemo(() => props?.data as unknown as CaptchaSchema || {}, [props?.data])
+	const { state, dispatch, findNonce } = useWorker(captchaData)
 
 	const handleInputChange = useCallback((event: JSX.TargetedEvent<HTMLInputElement, Event>) => {
 		dispatch({ type: 'SET_STATE', payload: { base64Result: event.currentTarget.value, message: '' } })
 	}, [])
+
+	const currentDifficulty: number = captchaData.action === '/api/v0/entrance/sign-up' ? captchaData.difficulty.signUp : captchaData.difficulty.signIn
 
 	if (typeof window === 'undefined') {
 		return (
@@ -117,12 +119,12 @@ export default function IslandsCaptchForm({ props }: Props): JSX.Element {
 	}
 
 	return (
-		<form method='POST' action={action as string}>
-			<input type='hidden' name='captcha' value={JSON.stringify(props.data)} />
+		<form method='POST' action={captchaData.action}>
+			<input type='hidden' name='captcha' value={JSON.stringify(captchaData)} />
 			<div className='wrapper'>
 				<div className='captcha-wrapper'>
 					<label htmlFor='captcha'>
-						Challenge: <span>{timestamp}:{challenge}</span>
+						Challenge: <span>{captchaData.timestamp}:{captchaData.challenge}</span>
 					</label>
 					<div className='relative'>
 						<input
@@ -131,7 +133,7 @@ export default function IslandsCaptchForm({ props }: Props): JSX.Element {
 							name='result'
 							placeholder={state.findingSolution
 								? `Looking for a solution, please wait... (${state.hashrate} h/s)`
-								: `Enter solution, difficulty level is ${difficulty}`}
+								: `Enter solution, difficulty level is ${currentDifficulty}`}
 							value={state.base64Result}
 							onChange={handleInputChange}
 							autoComplete='off'

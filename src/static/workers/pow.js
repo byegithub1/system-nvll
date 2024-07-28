@@ -5,7 +5,7 @@ async function V(q) {
     const I = F.toString(), J = G.encode(I); B.set(J, w.length);
     const U = await crypto.subtle.digest("SHA-256", B.subarray(0, w.length + J.length)), K = Array.from(new Uint8Array(U)).map((E) => E.toString(16).padStart(2, "0")).join("");
     if (K.startsWith(Q)) return btoa(JSON.stringify({ ...q, nonce: I, hash: K }));
-    if ((F++, z++, z % 1e3 === 0)) self.postMessage({ type: "hashrate", hashesComputed: z }), await new Promise((E) => setTimeout(E, 0));
+    if ((F++, z++, z % 1e4 === 0)) self.postMessage({ type: "hashrate", hashesComputed: z }), await new Promise((E) => setTimeout(E, 0));
   }
 }
 self.addEventListener("message", async (q) => self.postMessage({ type: "result", base64Result: await V(q.data) }));

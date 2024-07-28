@@ -1,55 +1,28 @@
 import Captcha from '../../components/entrance/captcha.tsx'
 import BackButton from '../../islands/entrance/back-button.tsx'
+import createCaptcha from '../../helpers/utils/common/captcha.ts'
 import IslandSignInForm from '../../islands/entrance/sign-in-form.tsx'
 
-import SystemKv, { ulid } from '../../helpers/utils/db.ts'
+import SystemKv from '../../helpers/utils/db.ts'
 
 import { JSX } from 'preact'
 import { asset } from '$fresh/runtime.ts'
 import { getCookies } from '$std/http/cookie.ts'
-import { encodeBase64Url } from '$std/encoding/base64url.ts'
 import { FreshContext, Handlers, PageProps } from '$fresh/server.ts'
 
-/**
- * @description Creates captcha data based on the provided remote IP, server data, and optional history data.
- * @param {string} remoteIp - The remote IP address.
- * @param {AfterServerData} serverData - The server data.
- * @param {CaptchaSchema} [historyData] - Optional history data.
- * @return {CaptchaSchema} The created captcha data.
- */
-const createCaptchaData = (remoteIp: string, serverData: AfterServerData, historyData?: CaptchaSchema): CaptchaSchema => {
-	return {
-		ulid: historyData?.ulid || ulid(),
-		remoteIp: historyData?.remoteIp || remoteIp,
-		email: serverData.data?.email as string,
-		captcha: !!(serverData.code === 404 || (historyData?.attempts && (historyData?.attempts as number) % 2 === 0)),
-		action: serverData.data?.action as string || '/api/v0/entrance/sign-up',
-		difficulty: historyData?.difficulty || serverData.code === 404 ? 1 : 1,
-		challenge: encodeBase64Url(crypto.getRandomValues(new Uint8Array(24))),
-		attempts: historyData?.attempts || 1,
-		timestamp: Math.floor(Date.now() / 1000),
-	}
-}
-
 export const handler: Handlers<AfterServerData> = {
-	/**
-	 * @description Asynchronously handles a GET request.
-	 * @param {Request} request - The incoming request object.
-	 * @param {FreshContext} ctx - The context object for the request.
-	 * @return {Promise<Response>} A promise that resolves to the response object.
-	 */
 	async GET(request: Request, ctx: FreshContext): Promise<Response> {
-		const remoteIp: string = request.headers.get('X-Forwarded-For') || ctx.remoteAddr.hostname
 		const cookies: Record<string, string> = getCookies(request.headers)
+
 		const serverData: AfterServerData = cookies.data ? JSON.parse(decodeURIComponent(cookies.data)) : { success: true, code: 200 }
+		const remoteIp: string = request.headers.get('X-Forwarded-For') ?? ctx.remoteAddr.hostname ?? (serverData.data?.remoteIp as string)
 
-		const history: Deno.KvEntryMaybe<unknown> = await SystemKv.get(['system_nvll', 'captchas', remoteIp])
-		const historyData: CaptchaSchema = history.value as CaptchaSchema
-		const captchaData: CaptchaSchema = createCaptchaData(remoteIp, serverData, historyData)
+		const action: string = serverData.code === 404 ? '/api/v0/entrance/sign-up' : '/api/v0/entrance/sign-in'
+		const newCaptcha: CaptchaSchema = await createCaptcha(remoteIp, serverData.data?.email as string, action)
 
-		await SystemKv.set(['system_nvll', 'captchas', remoteIp], captchaData)
+		await SystemKv.set(['system_nvll', 'captchas', remoteIp], newCaptcha)
 
-		serverData.data = { ...captchaData }
+		serverData.data = { ...newCaptcha }
 
 		return ctx.render(serverData)
 	},
