@@ -1,7 +1,7 @@
 import SystemKv from '../../../../helpers/utils/db.ts'
 import data from '../../../../helpers/utils/middleware/data.ts'
 import responder from '../../../../helpers/utils/middleware/responder.ts'
-import captchaPow from '../../../../helpers/utils/middleware/captcha-pow.ts'
+import captchaValidator from '../../../../helpers/utils/middleware/captcha-validator.ts'
 import payloadExtractor from '../../../../helpers/utils/middleware/payload-extractor.ts'
 import CaptchaValidationSchema from '../../../../helpers/utils/payload/validations/captcha.validation.ts'
 import EntranceValidationSchema from '../../../../helpers/utils/payload/validations/entrance.validation.ts'
@@ -45,7 +45,7 @@ export async function handler(request: Request, ctx: FreshContext): Promise<Resp
 				const validation: ReturnType<typeof data> = validator(validationSchema, payload)
 
 				if (validation.success && validation.data?.email) {
-					Object.assign(validation, await captchaPow(system_id, validation))
+					Object.assign(validation, await captchaValidator(system_id, validation))
 
 					if (validation.success) {
 						ctx.state.remoteIp = validation.data.remoteIp

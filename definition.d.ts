@@ -12,7 +12,12 @@ declare global {
 		type: string
 		message: string
 		data?: Record<string, unknown>
-		errors?: Record<string, unknown>
+		errors?: {
+			[key: string]: {
+				issue: string
+				value: unknown
+			}
+		}
 		feedback?: string
 	}
 
@@ -22,7 +27,12 @@ declare global {
 		type?: string
 		message?: string
 		data?: Record<string, unknown>
-		errors?: Record<string, unknown>
+		errors?: {
+			[key: string]: {
+				issue: string
+				value: unknown
+			}
+		}
 		feedback?: string
 	}
 

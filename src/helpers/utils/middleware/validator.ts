@@ -20,10 +20,16 @@ export function validator<T extends z.ZodTypeAny>(schema: T, payload: HttpPayloa
 			data: { ...payload, ...result.data },
 		})
 	} else {
-		const errors: Record<string, string> = result.error.issues.reduce((acc, issue) => {
-			acc[issue.path.join('.')] = issue.message
-			return acc
-		}, {} as Record<string, string>)
+		const errors: ServerData['errors'] = result.error.issues.reduce<ServerData['errors']>((acc, issue) => {
+			const fieldKey: string = issue.path.join('.')
+			return {
+				...acc,
+				[fieldKey]: {
+					issue: issue.message.toLowerCase(),
+					value: payload[fieldKey],
+				},
+			}
+		}, {})
 
 		return data({
 			success: false,

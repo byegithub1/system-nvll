@@ -12,7 +12,7 @@ export default function Newsletter(): JSX.Element {
 
 			<form>
 				<input type='email' id='email' name='email' placeholder='Enter your email address' required autoComplete='on' />
-				<button type='submit'>Subscribe</button>
+				<button type='submit' title='Subscribe'>Subscribe</button>
 			</form>
 		</section>
 	)

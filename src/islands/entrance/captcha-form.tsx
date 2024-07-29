@@ -1,4 +1,4 @@
-import OceansSignInForm from '../../oceans/entrance/sign-in-form.tsx'
+import OceansCaptchaForm from '../../oceans/entrance/captcha-form.tsx'
 
 import { JSX } from 'preact'
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'preact/hooks'
@@ -8,6 +8,7 @@ interface Props {
 }
 
 interface State {
+	mounted: boolean
 	base64Result: string
 	message: string
 	findingSolution: boolean
@@ -16,6 +17,7 @@ interface State {
 }
 
 const initialState: State = {
+	mounted: false,
 	base64Result: '',
 	message: '',
 	findingSolution: false,
@@ -89,6 +91,7 @@ const useWorker = (captchaData: CaptchaSchema) => {
 	}, [captchaData])
 
 	useEffect(() => {
+		dispatch({ type: 'SET_STATE', payload: { mounted: true } })
 		return () => {
 			if (workerRef.current) {
 				workerRef.current.terminate()
@@ -106,51 +109,62 @@ export default function IslandsCaptchForm({ props }: Props): JSX.Element {
 
 	const handleInputChange = useCallback((event: JSX.TargetedEvent<HTMLInputElement, Event>) => {
 		dispatch({ type: 'SET_STATE', payload: { base64Result: event.currentTarget.value, message: '' } })
-	}, [])
+	}, [dispatch])
 
 	const currentDifficulty: number = captchaData.action === '/api/v0/entrance/sign-up' ? captchaData.difficulty.signUp : captchaData.difficulty.signIn
 
-	if (typeof window === 'undefined') {
-		return (
+	return state.mounted
+		? (
+			<>
+				<form method='POST' action={captchaData.action}>
+					<input type='hidden' name='captcha' value={JSON.stringify(captchaData)} />
+					<div className='wrapper'>
+						<div className='captcha-wrapper'>
+							<label htmlFor='captcha'>
+								Challenge: <span>{captchaData.timestamp}:{captchaData.challenge}</span>
+							</label>
+							<div className='relative'>
+								<input
+									type='text'
+									id='captcha'
+									name='result'
+									placeholder={state.findingSolution
+										? `Looking for a solution, please wait... (${state.hashrate} h/s)`
+										: `Enter solution, difficulty level is ${currentDifficulty}`}
+									value={state.base64Result}
+									onChange={handleInputChange}
+									readOnly={state.findingSolution}
+									autoComplete='off'
+								/>
+							</div>
+						</div>
+						{props.errors?.captcha && (
+							<div className='alert-danger' role='alert'>
+								<span className='font-bold'>-ERR</span> {props.errors.captcha.issue}
+							</div>
+						)}
+						{!state.base64Result && !state.findingSolution && (
+							<button className='button-primary' type='button' onClick={findNonce} title='Find Solution'>
+								Find Solution
+							</button>
+						)}
+						{state.base64Result && (
+							<button className='button-primary' type='submit' title='Verify'>
+								Verify
+							</button>
+						)}
+					</div>
+				</form>
+
+				<div className='alert-info mt-7' role='alert'>
+					<span className='font-bold'>HINT</span>&nbsp; Avoid forcing it. The difficulty level will increase each time a captcha is successfully
+					validated. If no captcha is generated and solved within 60 minutes, the difficulty will reset.
+				</div>
+			</>
+		)
+		: (
 			<noscript>
-				<OceansSignInForm />
+				<OceansCaptchaForm props={props} />
 			</noscript>
 		)
-	}
-
-	return (
-		<form method='POST' action={captchaData.action}>
-			<input type='hidden' name='captcha' value={JSON.stringify(captchaData)} />
-			<div className='wrapper'>
-				<div className='captcha-wrapper'>
-					<label htmlFor='captcha'>
-						Challenge: <span>{captchaData.timestamp}:{captchaData.challenge}</span>
-					</label>
-					<div className='relative'>
-						<input
-							type='text'
-							id='captcha'
-							name='result'
-							placeholder={state.findingSolution
-								? `Looking for a solution, please wait... (${state.hashrate} h/s)`
-								: `Enter solution, difficulty level is ${currentDifficulty}`}
-							value={state.base64Result}
-							onChange={handleInputChange}
-							autoComplete='off'
-						/>
-					</div>
-				</div>
-				{!state.base64Result && !state.findingSolution && (
-					<button className='button-primary' type='button' onClick={findNonce}>
-						Find Solution
-					</button>
-				)}
-				{state.base64Result && (
-					<button className='button-primary' type='submit'>
-						Verify
-					</button>
-				)}
-			</div>
-		</form>
-	)
 }

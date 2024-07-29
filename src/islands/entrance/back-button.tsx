@@ -11,14 +11,14 @@ export default function BackButton(): JSX.Element {
 
 	return mounted
 		? (
-			<button class='button-secondary' onClick={() => window.history.back()}>
+			<button class='button-secondary' onClick={() => window.history.back()} title='Back'>
 				<img src={asset('/assets/svg/arrow-left.svg')} alt='Back' /> Back
 			</button>
 		)
 		: (
 			<noscript>
 				<a href='/'>
-					<button class='button-secondary'>
+					<button class='button-secondary' title='Back'>
 						<img src={asset('/assets/svg/arrow-left.svg')} alt='Back' /> Home
 					</button>
 				</a>

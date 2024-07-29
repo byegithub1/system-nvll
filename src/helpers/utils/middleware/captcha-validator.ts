@@ -1,5 +1,6 @@
 import SystemKv from '../db.ts'
 import data from '../middleware/data.ts'
+
 import { encodeHex } from '$std/encoding/hex.ts'
 
 interface CaptchaSolution {
@@ -7,7 +8,7 @@ interface CaptchaSolution {
 	hash?: string
 }
 
-export default async function captchaPow(system_id: string, payload: ServerData): Promise<ServerData> {
+export default async function captchaValidator(system_id: string, payload: ServerData): Promise<ServerData> {
 	const request: CaptchaSchema = payload.data as unknown as CaptchaSchema
 	const emailHash: string = encodeHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${system_id}:${request.email}`)))
 	const [user, storedCaptcha] = await Promise.all([
@@ -21,7 +22,7 @@ export default async function captchaPow(system_id: string, payload: ServerData)
 			success: false,
 			code: 400,
 			message: '-ERR no stored captcha found',
-			errors: { captcha: 'no stored captcha found' },
+			errors: { captcha: { issue: 'no stored captcha found', value: request.remoteIp } },
 		})
 	}
 
@@ -34,7 +35,7 @@ export default async function captchaPow(system_id: string, payload: ServerData)
 			success: false,
 			code: user.value ? 429 : 404,
 			message: '-ERR captcha required',
-			errors: { captcha: 'captcha required' },
+			errors: { email: { issue: 'captcha required', value: request.email } },
 			data: { ...calculatedData, captcha: true },
 		})
 	}
@@ -57,7 +58,7 @@ export default async function captchaPow(system_id: string, payload: ServerData)
 			success: false,
 			code: user.value ? 429 : 404,
 			message: '-ERR invalid captcha solution',
-			errors: { captcha: 'invalid captcha solution' },
+			errors: { captcha: { issue: 'invalid captcha solution', value: request.result } },
 			data: { ...calculatedData, captcha: true },
 		})
 	}

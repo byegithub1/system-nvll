@@ -1,7 +1,7 @@
 import Captcha from '../../components/entrance/captcha.tsx'
 import BackButton from '../../islands/entrance/back-button.tsx'
 import createCaptcha from '../../helpers/utils/common/captcha.ts'
-import IslandSignInForm from '../../islands/entrance/sign-in-form.tsx'
+import IslandsEntranceForm from '../../islands/entrance/entrance-form.tsx'
 
 import SystemKv from '../../helpers/utils/db.ts'
 
@@ -40,13 +40,15 @@ export default function Entrance({ data }: PageProps<AfterServerData>): JSX.Elem
 					<section class='login'>
 						<div class='wrapper'>
 							<header>
-								<img src={asset('/assets/png/nvll-no-pad.png')} alt='NVLL' />
+								<a href='/'>
+									<img src={asset('/assets/png/nvll-no-pad.png')} alt='NVLL' />
+								</a>
 								<h3>{data.message}</h3>
 								<p>Hello {(data.data?.email as string).split('@')[0]}, please check your inbox or spam folder.</p>
 							</header>
 							<form method='POST' action={`/api/v0/entrance/sign-in?resend=${data.data?.ulid}`}>
 								<input type='hidden' name='email' value={data.data?.email as string} />
-								<button class='button-primary' type='submit'>Resend</button>
+								<button class='button-primary' type='submit' title='Resend'>Resend</button>
 							</form>
 						</div>
 					</section>
@@ -59,15 +61,13 @@ export default function Entrance({ data }: PageProps<AfterServerData>): JSX.Elem
 					<section class='login'>
 						<div class='wrapper'>
 							<header>
-								<img src={asset('/assets/png/nvll-no-pad.png')} alt='NVLL' />
+								<a href='/'>
+									<img src={asset('/assets/png/nvll-no-pad.png')} alt='NVLL' />
+								</a>
 								<h3>Entrance | SIGN IN/UP</h3>
 								<p>We'll send a code to your inbox. No need for passwords -- Like Harry Houdini's magic!✨</p>
 							</header>
-							<IslandSignInForm props={data} />
-							<div class='divider-text'>OR</div>
-							<a href='/entrance/scram'>
-								<button class='button-primary'>Use a Password (Advanced)</button>
-							</a>
+							<IslandsEntranceForm props={data} />
 							<div class='back-wrapper'>
 								<BackButton />
 							</div>

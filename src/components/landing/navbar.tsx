@@ -17,7 +17,7 @@ export default function Navbar(): JSX.Element {
 							ask@nvll.me
 						</a>
 						<a href='/entrance' class='entrance'>
-							<button class='button-primary' type='button'>
+							<button class='button-primary' type='button' title='Entrance'>
 								Entrance
 							</button>
 						</a>

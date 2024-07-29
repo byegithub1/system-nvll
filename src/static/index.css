@@ -218,28 +218,23 @@ button {
   px-4
   block
   w-full
-  !border-red-500
+  !border-red-800
   rounded-lg
   text-sm
-  focus:!border-red-500
-  focus:!ring-red-500
+  focus:!border-red-800
+  focus:!ring-red-800
   dark:bg-neutral-800
   dark:border-neutral-700
   dark:text-neutral-400;
 }
 .alert-danger {
-  @apply mt-2
-  !mb-4
-  bg-dim
-  border
-  border-dim
+  @apply text-justify
+  p-4
+  mb-4
   text-sm
   text-red-800
   rounded-lg
-  p-4
-  dark:bg-red-800/10
-  dark:border-red-900
-  dark:text-red-500;
+  bg-dim;
 }
 .alert-info {
   @apply text-justify
@@ -248,9 +243,7 @@ button {
   text-sm
   text-primary
   rounded-lg
-  bg-dim
-  dark:bg-gray-100
-  dark:text-blue-400;
+  bg-dim;
 }
 .divider-text {
   @apply py-3
@@ -1218,7 +1211,7 @@ section.page-container section.login .wrapper form .wrapper .email-wrapper label
 section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper label .error,
 section.page-container section.scram .wrapper form .wrapper .email-wrapper label .error {
   @apply text-sm
-  text-red-500;
+  text-red-800;
 }
 section.page-container section.login .wrapper form .wrapper .email-wrapper label .error span,
 section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper label .error span,

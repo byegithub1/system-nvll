@@ -1,23 +1,8 @@
-interface HashRateMessage {
-	type: 'hashrate'
-	hashesComputed: number
-}
-
-interface ResultMessage {
-	type: 'result'
-	base64Result: string
-}
-
-/**
- * @description Calculates the hash of a given CaptchaWorkerData object using the SHA-256 algorithm.
- * @param {CaptchaWorkerData} data - The CaptchaWorkerData object containing the challenge, timestamp, nonce, and difficulty.
- * @return {Promise<string>} A promise that resolves to a base64-encoded JSON string containing the original data, nonce, and hash.
- */
-async function calculateHash(data: CaptchaWorkerData): Promise<string> {
-	let currentNonce: bigint = BigInt(data.nonce)
+export default async function calculateHash(difficulty: number, challenge: string, timestamp: string): Promise<void> {
+	let currentNonce: bigint = BigInt(0)
 	let hashesComputed: number = 0
 
-	const { challenge, difficulty, timestamp } = data
+	const startTime = Date.now()
 	const targetPrefix: string = '0'.repeat(difficulty)
 	const encoder: TextEncoder = new TextEncoder()
 	const staticPart: Uint8Array = encoder.encode(`${timestamp}:${challenge}`)
@@ -46,20 +31,18 @@ async function calculateHash(data: CaptchaWorkerData): Promise<string> {
 			})
 
 		if (String.fromCharCode.apply(null, hashResult.subarray(0, difficulty) as unknown as number[]) === targetPrefix) {
-			return btoa(JSON.stringify({ ...data, nonce: nonceStr, hash: String.fromCharCode.apply(null, hashResult as unknown as number[]) }))
+			const result = { difficulty, challenge, timestamp, nonce: nonceStr, hash: String.fromCharCode.apply(null, hashResult as unknown as number[]) }
+			return console.log(btoa(JSON.stringify(result)))
 		}
 
 		currentNonce++
 		hashesComputed++
 
 		if (hashesComputed % 1e4 === 0) {
-			self.postMessage({ type: 'hashrate', hashesComputed } as HashRateMessage)
+			const hashRate = hashesComputed / ((Date.now() - startTime) / 1e4)
+			console.clear()
+			console.log(`Looking for a solution, please wait... (${Math.floor(hashRate)} h/s)`)
 			await new Promise<void>((resolve) => setTimeout(resolve, 0))
 		}
 	}
 }
-
-self.addEventListener('message', async (event: MessageEvent<CaptchaWorkerData>): Promise<void> => {
-	const result: string = await calculateHash(event.data)
-	self.postMessage({ type: 'result', base64Result: result } as ResultMessage)
-})
