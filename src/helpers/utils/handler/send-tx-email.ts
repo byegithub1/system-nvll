@@ -33,7 +33,7 @@ export default async function sendTxEmail<T extends TxEmailTemplateData>(system_
 	const { template, templateData, to, from = env['SMTP_USER'] as string } = options
 
 	// Generate access token if not provided in templateData
-	if (!('token' in templateData)) {
+	if (!('token' in templateData) || !templateData.token) {
 		const { accessToken }: { accessToken: string } = await createToken(system_id, user)
 		;(templateData as T & { token: string }).token = accessToken
 	}
