@@ -1,11 +1,5 @@
 import { FreshContext } from '$fresh/server.ts'
 
-declare global {
-	interface HttpPayload {
-		[key: string]: unknown
-	}
-}
-
 /**
  * @description Extracts the payload from the request based on the content type.
  * @param {Request} request - The incoming request object.

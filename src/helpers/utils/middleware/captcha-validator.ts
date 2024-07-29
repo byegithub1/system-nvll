@@ -8,6 +8,16 @@ interface CaptchaSolution {
 	hash?: string
 }
 
+/**
+ * @description Validates a captcha request by checking if a stored captcha exists for the given IP address.
+ * If a stored captcha is found, it checks if a captcha solution is required based on the user's status.
+ * If a captcha solution is required, it verifies the provided solution.
+ * If the solution is valid, it updates the stored captcha with the new difficulty and attempts.
+ * If the solution is invalid, it returns an error response.
+ * @param {string} system_id - The system ID used to hash the email.
+ * @param {ServerData} payload - The server data containing the captcha request.
+ * @return {Promise<ServerData>} The server data response containing the validation result.
+ */
 export default async function captchaValidator(system_id: string, payload: ServerData): Promise<ServerData> {
 	const request: CaptchaSchema = payload.data as unknown as CaptchaSchema
 	const emailHash: string = encodeHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${system_id}:${request.email}`)))
@@ -80,27 +90,28 @@ export default async function captchaValidator(system_id: string, payload: Serve
 	})
 }
 
+/**
+ * @description Verifies the solution of a captcha by comparing the expected hash with the provided hash.
+ * @param {string} result - The result of the captcha solution.
+ * @param {CaptchaSchema} captchaData - The captcha data containing the timestamp, challenge, difficulty, and action.
+ * @return {Promise<CaptchaSolution>} A promise that resolves to a CaptchaSolution object indicating the validity of the captcha solution and the expected hash.
+ */
 async function verifySolution(result: string, captchaData: CaptchaSchema): Promise<CaptchaSolution> {
 	if (!result) return { valid: false }
 
 	try {
-		const { timestamp, challenge, difficulty, action } = captchaData
+		const { timestamp, challenge, difficulty, action } = captchaData as CaptchaSchema
 		const { nonce, hash }: { nonce: string; hash: string } = JSON.parse(atob(result))
 
 		if (!timestamp || !challenge || !difficulty || !nonce || !hash) return { valid: false }
 
-		const encoder = new TextEncoder()
-		const data = encoder.encode(`${timestamp}:${challenge}${nonce}`)
-		const hashBuffer = await crypto.subtle.digest('SHA-256', data)
-		const expectedHash = Array.from(new Uint8Array(hashBuffer))
-			.map((b) => b.toString(16).padStart(2, '0'))
-			.join('')
-
+		const encoder: TextEncoder = new TextEncoder()
+		const data: ArrayBuffer = encoder.encode(`${timestamp}:${challenge}${nonce}`)
+		const hashBuffer: ArrayBuffer = await crypto.subtle.digest('SHA-256', data)
+		const expectedHash: string = Array.from(new Uint8Array(hashBuffer)).map((b) => b.toString(16).padStart(2, '0')).join('')
 		const currentDifficulty = action === '/api/v0/entrance/sign-up' ? difficulty.signUp : difficulty.signIn
-		return {
-			valid: expectedHash === hash && expectedHash.startsWith('0'.repeat(currentDifficulty)),
-			hash: expectedHash,
-		}
+
+		return { valid: expectedHash === hash && expectedHash.startsWith('0'.repeat(currentDifficulty)), hash: expectedHash }
 	} catch (_error) {
 		return { valid: false }
 	}

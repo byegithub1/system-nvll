@@ -44,7 +44,7 @@ const reducer = (state: State, action: Action): State => {
 }
 
 const useWorker = (captchaData: CaptchaSchema) => {
-	const [state, dispatch] = useReducer(reducer, initialState)
+	const [state, dispatch] = useReducer<State, Action>(reducer, initialState)
 
 	const workerRef = useRef<Worker | null>(null)
 	const startTimeRef = useRef<number>(0)
@@ -104,14 +104,12 @@ const useWorker = (captchaData: CaptchaSchema) => {
 }
 
 export default function IslandsCaptchForm({ props }: Props): JSX.Element {
-	const captchaData: CaptchaSchema = useMemo(() => props?.data as unknown as CaptchaSchema || {}, [props?.data])
+	const captchaData: CaptchaSchema = useMemo<CaptchaSchema>(() => props?.data as unknown as CaptchaSchema || {}, [props?.data])
+	const currentDifficulty: number = captchaData.action === '/api/v0/entrance/sign-up' ? captchaData.difficulty.signUp : captchaData.difficulty.signIn
 	const { state, dispatch, findNonce } = useWorker(captchaData)
-
 	const handleInputChange = useCallback((event: JSX.TargetedEvent<HTMLInputElement, Event>) => {
 		dispatch({ type: 'SET_STATE', payload: { base64Result: event.currentTarget.value, message: '' } })
 	}, [dispatch])
-
-	const currentDifficulty: number = captchaData.action === '/api/v0/entrance/sign-up' ? captchaData.difficulty.signUp : captchaData.difficulty.signIn
 
 	return state.mounted
 		? (

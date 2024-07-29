@@ -11,12 +11,16 @@ import { getCookies } from '$std/http/cookie.ts'
 import { FreshContext, Handlers, PageProps } from '$fresh/server.ts'
 
 export const handler: Handlers<AfterServerData> = {
+	/**
+	 * @description Asynchronously handles a GET request to retrieve captcha data and render the server data.
+	 * @param {Request} request - the incoming request object
+	 * @param {FreshContext} ctx - the fresh context object
+	 * @return {Promise<Response>} a promise that resolves to the rendered server data
+	 */
 	async GET(request: Request, ctx: FreshContext): Promise<Response> {
 		const cookies: Record<string, string> = getCookies(request.headers)
-
 		const serverData: AfterServerData = cookies.data ? JSON.parse(decodeURIComponent(cookies.data)) : { success: true, code: 200 }
 		const remoteIp: string = request.headers.get('X-Forwarded-For') ?? ctx.remoteAddr.hostname ?? (serverData.data?.remoteIp as string)
-
 		const action: string = serverData.code === 404 ? '/api/v0/entrance/sign-up' : '/api/v0/entrance/sign-in'
 		const newCaptcha: CaptchaSchema = await createCaptcha(remoteIp, serverData.data?.email as string, action)
 

@@ -14,6 +14,12 @@ const SUPPORTED_CT: readonly string[] = ['application/x-www-form-urlencoded']
 
 type SupportedContentType = typeof SUPPORTED_CT[number]
 
+/**
+ * @description Handles the incoming request and returns a response based on the request method.
+ * @param {Request} request - The incoming request object.
+ * @param {FreshContext} ctx - The fresh context object with the system context.
+ * @returns {Promise<Response>} A promise that resolves to a Response object.
+ */
 export async function handler(request: Request, ctx: FreshContext): Promise<Response> {
 	const system_id: string = SystemKv.id(ctx)
 	const contentType: SupportedContentType | null = request.headers.get('Content-Type') as SupportedContentType | null

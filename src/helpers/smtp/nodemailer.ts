@@ -18,11 +18,8 @@ const transporter: Transporter<SentMessageInfo> = nodemailer.createTransport({
 
 /**
  * @description Sends an email using the configured transporter.
- * @param {Mail.Options} mailOptions
- * The email options, including from, to, subject, and body.
- * @returns {Promise<boolean>}
- * A promise that resolves to a boolean indicating if the email was sent
- * successfully.
+ * @param {Mail.Options} mailOptions The email options, including from, to, subject, and body.
+ * @returns {Promise<boolean>} A promise that resolves to a boolean indicating if the email was sent successfully.
  */
 const send = (mailOptions: Mail.Options): Promise<boolean> => {
 	return new Promise((resolve, _reject): void => {

@@ -36,6 +36,10 @@ declare global {
 		feedback?: string
 	}
 
+	interface HttpPayload {
+		[key: string]: unknown
+	}
+
 	interface JwtToken extends Payload {
 		email: string
 		authType: string

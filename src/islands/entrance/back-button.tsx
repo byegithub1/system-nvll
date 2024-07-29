@@ -3,7 +3,7 @@ import { asset } from '$fresh/runtime.ts'
 import { useEffect, useState } from 'preact/hooks'
 
 export default function BackButton(): JSX.Element {
-	const [mounted, setMounted] = useState(false)
+	const [mounted, setMounted] = useState<boolean>(false)
 
 	useEffect(() => {
 		setMounted(true)

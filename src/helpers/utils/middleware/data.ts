@@ -1,7 +1,7 @@
 /**
  * @description Wraps the provided data into a ServerData object.
- * @param params - The data to be wrapped.
- * @returns A ServerData object with the provided data and default values for missing properties.
+ * @param {Partial<ServerData>} params - The data to be wrapped.
+ * @return {ServerData} A ServerData object with the provided data and default values for missing properties.
  */
 export default function data(params: Partial<ServerData>): ServerData {
 	const data: ServerData = {

@@ -1,27 +1,32 @@
-const RATE_LIMIT = 1000
-const RATE_LIMIT_WINDOW = 60 * 60 * 1000 // 60 minutes
-const RATE_LIMIT_METHOD_EXCLUDE = ['HEAD', 'OPTIONS']
-const RATE_LIMIT_CLIENTS = new Map<string, { count: number; timestamp: number }>()
+interface RateLimitMap {
+	count: number
+	timestamp: number
+}
+
+const RATE_LIMIT: number = 1000
+const RATE_LIMIT_WINDOW: number = 60 * 60 * 1000 // 60 minutes
+const RATE_LIMIT_METHOD_EXCLUDE: string[] = ['HEAD', 'OPTIONS']
+const RATE_LIMIT_CLIENTS: Map<string, RateLimitMap> = new Map<string, RateLimitMap>()
 
 /**
  * @description Rate limiting function.
- * @param clientIP - The client's IP address.
- * @param method - The HTTP method.
- * @returns An object with a `limited` boolean indicating if the client is rate limited and a `count`
- * number indicating the number of requests the client has made in the rate limiting window.
+ * @param {string} clientIP - The client's IP address.
+ * @param {string} method - The HTTP method.
+ * @return {{ limited: boolean; count: number }} An object with a `limited` boolean indicating if the client is
+ * rate limited and a `count` number indicating the number of requests the client has made in the rate limiting window.
  */
 function rateLimit(clientIP: string, method: string): { limited: boolean; count: number } {
 	if (RATE_LIMIT_METHOD_EXCLUDE.includes(method)) return { limited: false, count: 0 }
 
 	const now: number = Date.now()
-	const clientData: { count: number; timestamp: number } | undefined = RATE_LIMIT_CLIENTS.get(clientIP)
+	const clientData: RateLimitMap | undefined = RATE_LIMIT_CLIENTS.get(clientIP)
 
 	if (now - (clientData?.timestamp ?? now) > RATE_LIMIT_WINDOW) {
-		const newClientData: { count: number; timestamp: number } = { count: 1, timestamp: now }
+		const newClientData: RateLimitMap = { count: 1, timestamp: now }
 		RATE_LIMIT_CLIENTS.set(clientIP, newClientData)
 		return { limited: false, count: newClientData.count }
 	} else {
-		const updatedClientData: { count: number; timestamp: number } = { count: (clientData?.count ?? 0) + 1, timestamp: now }
+		const updatedClientData: RateLimitMap = { count: (clientData?.count ?? 0) + 1, timestamp: now }
 		RATE_LIMIT_CLIENTS.set(clientIP, updatedClientData)
 		return { limited: updatedClientData.count > RATE_LIMIT, count: updatedClientData.count }
 	}
@@ -29,13 +34,13 @@ function rateLimit(clientIP: string, method: string): { limited: boolean; count:
 
 /**
  * @description Applies various security headers to the response headers and logs the request.
- * @param pathname - The pathname of the request.
- * @param headers - The headers of the response.
- * @param clientIP - The IP address of the client.
- * @param method - The HTTP method of the request.
- * @param status - The status code of the response.
- * @param responseTime - The response time of the request.
- * @returns An object with the updated headers and a boolean indicating if the client is rate limited.
+ * @param {string} pathname - The pathname of the request.
+ * @param {Headers} headers - The headers of the response.
+ * @param {string} clientIP - The IP address of the client.
+ * @param {string} method - The HTTP method of the request.
+ * @param {number} status - The status code of the response.
+ * @param {string} responseTime - The response time of the request.
+ * @return {{ headers: Headers; rateLimited: boolean }} An object with the updated headers and a boolean indicating if the client is rate limited.
  */
 export function sentinel(
 	pathname: string,

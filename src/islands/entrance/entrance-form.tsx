@@ -1,4 +1,5 @@
 import OceansEntranceForm from '../../oceans/entrance/entrance-form.tsx'
+
 import { JSX } from 'preact'
 import { asset } from '$fresh/runtime.ts'
 import { useCallback, useEffect, useState } from 'preact/hooks'
@@ -8,7 +9,7 @@ interface Props {
 }
 
 export default function IslandsEntranceForm({ props }: Props): JSX.Element {
-	const [mounted, setMounted] = useState(false)
+	const [mounted, setMounted] = useState<boolean>(false)
 	const [socket, setSocket] = useState<WebSocket | null>(null)
 
 	useEffect(() => {
