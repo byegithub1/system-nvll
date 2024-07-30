@@ -1,39 +1,10 @@
 import { Payload } from 'djwt'
+import { FreshContext } from '$fresh/server.ts'
 import { AppContext } from './src/routes/_middleware.ts'
 
 declare global {
 	interface SystemState {
 		context: AppContext
-	}
-
-	interface ServerData {
-		success: boolean
-		code: number
-		type: string
-		message: string
-		data?: Record<string, unknown>
-		errors?: {
-			[key: string]: {
-				issue: string
-				value: unknown
-			}
-		}
-		feedback?: string
-	}
-
-	interface AfterServerData {
-		success: boolean
-		code: number
-		type?: string
-		message?: string
-		data?: Record<string, unknown>
-		errors?: {
-			[key: string]: {
-				issue: string
-				value: unknown
-			}
-		}
-		feedback?: string
 	}
 
 	interface SentinelData {
@@ -46,6 +17,14 @@ declare global {
 		pathname: string
 		remoteIp: string
 		method: string
+		startTime: number
+	}
+
+	interface MiddlewareRouteProps {
+		request: Request
+		ctx: FreshContext<SystemState>
+		url: URL
+		remoteIp: string
 		startTime: number
 	}
 
@@ -71,7 +50,37 @@ declare global {
 
 	type TxEmailTemplateData = Record<string, unknown>
 
-	type Schemas = SystemSchema | TrafficSchema | UserSchema | CaptchaSchema
+	type Schemas = ServerDataSchema | SystemSchema | TrafficSchema | UserSchema | CaptchaSchema
+
+	interface ServerDataSchema {
+		success: boolean
+		code: number
+		type: string
+		message: string
+		data?: Record<string, unknown>
+		errors?: {
+			[key: string]: {
+				issue: string
+				value: unknown
+			}
+		}
+		feedback?: string
+	}
+
+	interface AfterServerDataSchema {
+		success: boolean
+		code: number
+		type?: string
+		message?: string
+		data?: Record<string, unknown>
+		errors?: {
+			[key: string]: {
+				issue: string
+				value: unknown
+			}
+		}
+		feedback?: string
+	}
 
 	interface SystemSchema {
 		ulid: string
@@ -81,7 +90,10 @@ declare global {
 	}
 
 	interface TrafficSchema {
-		ulid: string
+		request: string
+		purpose: string
+		status: string
+		remoteIp: string
 		endpoint: string
 		method: string
 		processing: boolean

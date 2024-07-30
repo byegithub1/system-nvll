@@ -5,7 +5,7 @@ import { asset } from '$fresh/runtime.ts'
 import { useCallback, useEffect, useState } from 'preact/hooks'
 
 interface Props {
-	props: AfterServerData
+	props: AfterServerDataSchema
 }
 
 export default function IslandsEntranceForm({ props }: Props): JSX.Element {

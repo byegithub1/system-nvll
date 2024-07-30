@@ -15,10 +15,10 @@ interface CaptchaSolution {
  * If the solution is valid, it updates the stored captcha with the new difficulty and attempts.
  * If the solution is invalid, it returns an error response.
  * @param {string} system_id - The system ID used to hash the email.
- * @param {ServerData} payload - The server data containing the captcha request.
- * @return {Promise<ServerData>} The server data response containing the validation result.
+ * @param {ServerDataSchema} payload - The server data containing the captcha request.
+ * @return {Promise<ServerDataSchema>} The server data response containing the validation result.
  */
-export default async function validator(system_id: string, payload: ServerData): Promise<ServerData> {
+export default async function validator(system_id: string, payload: ServerDataSchema): Promise<ServerDataSchema> {
 	const request: CaptchaSchema = payload.data as unknown as CaptchaSchema
 	const emailHash: string = encodeHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${system_id}:${request.email}`)))
 	const [user, storedCaptcha] = await Promise.all([
@@ -31,6 +31,7 @@ export default async function validator(system_id: string, payload: ServerData):
 			...payload,
 			success: false,
 			code: 400,
+			type: 'captcha',
 			message: '-ERR no stored captcha found',
 			errors: { captcha: { issue: 'no stored captcha found', value: request.remoteIp } },
 		})
@@ -44,6 +45,7 @@ export default async function validator(system_id: string, payload: ServerData):
 			...payload,
 			success: false,
 			code: user.value ? 429 : 404,
+			type: 'captcha',
 			message: '-ERR captcha required',
 			errors: { email: { issue: 'captcha required', value: request.email } },
 			data: { ...calculatedData, captcha: true },
@@ -67,6 +69,7 @@ export default async function validator(system_id: string, payload: ServerData):
 			...payload,
 			success: false,
 			code: user.value ? 429 : 404,
+			type: 'captcha',
 			message: '-ERR invalid captcha solution',
 			errors: { captcha: { issue: 'invalid captcha solution', value: request.result } },
 			data: { ...calculatedData, captcha: true },
@@ -85,6 +88,7 @@ export default async function validator(system_id: string, payload: ServerData):
 		...payload,
 		success: true,
 		code: 202,
+		type: 'captcha',
 		message: '+OK captcha verified successfully',
 		data: { ...calculatedData, captcha: false },
 	})

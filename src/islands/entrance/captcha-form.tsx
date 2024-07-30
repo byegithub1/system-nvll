@@ -4,7 +4,7 @@ import { JSX } from 'preact'
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'preact/hooks'
 
 interface Props {
-	props: AfterServerData
+	props: AfterServerDataSchema
 }
 
 interface State {

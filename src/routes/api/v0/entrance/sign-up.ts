@@ -29,7 +29,14 @@ export const handler: Handlers = {
 			const emailHash: string = encodeHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${system_id}:${email}`)))
 			const user: Deno.KvEntryMaybe<unknown> = await SystemKv.get(['system_nvll', 'users', emailHash])
 
-			if (user.value) return json(data({ success: false, code: 400, message: '-ERR user already exists' }))
+			if (user.value) {
+				return json(data({
+					success: false,
+					code: 400,
+					type: 'sign-up',
+					message: '-ERR user already exists',
+				}))
+			}
 
 			const newUser: UserSchema = {
 				ulid: ulid(),
@@ -81,9 +88,19 @@ export const handler: Handlers = {
 			})
 			await SystemKv.set(['system_nvll', 'users', newUser.email], newUser)
 
-			return json(data({ success: true, code: 202, message: '+OK verification email sent' }))
+			return json(data({
+				success: true,
+				code: 202,
+				type: 'sign-up',
+				message: '+OK verification email sent',
+			}))
 		} catch (error: unknown) {
-			return json(data({ success: false, code: 500, message: `-ERR ${error instanceof Error ? error.message : 'unknown error'}` }))
+			return json(data({
+				success: false,
+				code: 500,
+				type: 'sign-up',
+				message: `-ERR ${error instanceof Error ? error.message : 'unknown error'}`,
+			}))
 		}
 	},
 }

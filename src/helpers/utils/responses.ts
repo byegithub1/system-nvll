@@ -1,10 +1,10 @@
 /**
- * @description Wraps the provided data into a ServerData object.
- * @param {Partial<ServerData>} params - The data to be wrapped.
- * @return {ServerData} A ServerData object with the provided data and default values for missing properties.
+ * @description Wraps the provided data into a ServerDataSchema object.
+ * @param {Partial<ServerDataSchema>} params - The data to be wrapped.
+ * @return {ServerDataSchema} A ServerDataSchema object with the provided data and default values for missing properties.
  */
-export function data(params: Partial<ServerData>): ServerData {
-	const data: ServerData = {
+export function data(params: Partial<ServerDataSchema>): ServerDataSchema {
+	const data: ServerDataSchema = {
 		success: params.success ?? false,
 		code: params.code ?? 500,
 		type: params.type ?? 'request',
@@ -19,9 +19,9 @@ export function data(params: Partial<ServerData>): ServerData {
 
 /**
  * @description Sends a server data response as a JSON object.
- * @param {ServerData} data - The server data to send as a response.
+ * @param {ServerDataSchema} data - The server data to send as a response.
  * @returns {Response} The response object.
  */
-export function json(data: ServerData): Response {
+export function json(data: ServerDataSchema): Response {
 	return Response.json(data, { status: data.code })
 }

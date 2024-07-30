@@ -119,13 +119,7 @@ export async function handler(request: Request, ctx: FreshContext<SystemState>):
 		}
 
 		// Handle routes
-		if (ctx.destination === 'route') {
-			const { response, rateLimited }: { response: Response; rateLimited: boolean } = await route(request, ctx, url, remoteIp, startTime)
-
-			if (rateLimited) return new Response(null, { status: 429, headers: response.headers })
-
-			return response
-		}
+		if (ctx.destination === 'route') return await route({ request, ctx, url, remoteIp, startTime } as MiddlewareRouteProps)
 
 		// Default fallback
 		return ctx.next()

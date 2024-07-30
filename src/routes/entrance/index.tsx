@@ -9,7 +9,7 @@ import { asset } from '$fresh/runtime.ts'
 import { getCookies } from '$std/http/cookie.ts'
 import { FreshContext, Handlers, PageProps } from '$fresh/server.ts'
 
-export const handler: Handlers<AfterServerData> = {
+export const handler: Handlers<AfterServerDataSchema> = {
 	/**
 	 * @description Asynchronously handles a GET request to retrieve captcha data and render the server data.
 	 * @param {Request} request - the incoming request object
@@ -18,7 +18,7 @@ export const handler: Handlers<AfterServerData> = {
 	 */
 	async GET(request: Request, ctx: FreshContext): Promise<Response> {
 		const cookies: Record<string, string> = getCookies(request.headers)
-		const serverData: AfterServerData = cookies.data ? JSON.parse(decodeURIComponent(cookies.data)) : { success: true, code: 200 }
+		const serverData: AfterServerDataSchema = cookies.data ? JSON.parse(decodeURIComponent(cookies.data)) : { success: true, code: 200 }
 		const remoteIp: string = request.headers.get('X-Forwarded-For') ?? ctx.remoteAddr.hostname ?? (serverData.data?.remoteIp as string)
 		const action: string = serverData.code === 404 ? '/api/v0/entrance/sign-up' : '/api/v0/entrance/sign-in'
 		const newCaptcha: CaptchaSchema = await captchaCreator(remoteIp, serverData.data?.email as string, action)
@@ -31,7 +31,7 @@ export const handler: Handlers<AfterServerData> = {
 	},
 }
 
-export default function Entrance({ data }: PageProps<AfterServerData>): JSX.Element {
+export default function Entrance({ data }: PageProps<AfterServerDataSchema>): JSX.Element {
 	switch (data.code) {
 		case 404:
 		case 429: {

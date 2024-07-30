@@ -45,6 +45,7 @@
 		"preact/": "https://esm.sh/preact@10.19.6/",
 		"tailwindcss": "npm:/tailwindcss@^3.4.6",
 		"tailwindcss/plugin": "npm:/tailwindcss@3.4.6/plugin.js",
+		"ui7": "https://deno.land/x/ui7@v0.2.3/mod.ts",
 		"ulid": "https://deno.land/x/ulid@v0.3.0/mod.ts",
 		"zod": "https://deno.land/x/zod@v3.23.8/mod.ts"
 	},

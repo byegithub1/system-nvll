@@ -1,7 +1,7 @@
 import { JSX } from 'preact'
 
 interface Props {
-	props: AfterServerData
+	props: AfterServerDataSchema
 }
 
 export default function OceansCaptchaForm({ props }: Props): JSX.Element {

@@ -4,7 +4,7 @@ import { JSX } from 'preact'
 import { asset } from '$fresh/runtime.ts'
 
 interface Props {
-	props: AfterServerData
+	props: AfterServerDataSchema
 }
 
 export default function Captcha({ props }: Props): JSX.Element {

@@ -2,12 +2,12 @@ import { z } from 'zod'
 import { data } from '../responses.ts'
 
 /**
- * @description Validates the payload against the provided schema and returns a strongly typed ServerData object.
+ * @description Validates the payload against the provided schema and returns a strongly typed ServerDataSchema object.
  * @param {T} schema - The Zod schema to validate against.
  * @param {HttpPayload} payload - The data to be validated.
- * @returns {ServerData} - A strongly typed ServerData object with the validation result.
+ * @returns {ServerDataSchema} - A strongly typed ServerDataSchema object with the validation result.
  */
-export default function validator<T extends z.ZodTypeAny>(schema: T, payload: HttpPayload): ServerData {
+export default function validator<T extends z.ZodTypeAny>(schema: T, payload: HttpPayload): ServerDataSchema {
 	const result: z.SafeParseReturnType<T, HttpPayload> = schema.safeParse(payload)
 
 	if (result.success) {
@@ -19,7 +19,7 @@ export default function validator<T extends z.ZodTypeAny>(schema: T, payload: Ht
 			data: { ...payload, ...result.data },
 		})
 	} else {
-		const errors: ServerData['errors'] = result.error.issues.reduce<ServerData['errors']>((acc, issue) => {
+		const errors: ServerDataSchema['errors'] = result.error.issues.reduce<ServerDataSchema['errors']>((acc, issue) => {
 			const fieldKey: string = issue.path.join('.')
 			return {
 				...acc,

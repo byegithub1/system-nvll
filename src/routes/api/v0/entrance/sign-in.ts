@@ -29,8 +29,23 @@ export const handler: Handlers = {
 			const user: Deno.KvEntryMaybe<unknown> = await SystemKv.get(['system_nvll', 'users', emailHash])
 			const userData: UserSchema | undefined = user.value as UserSchema
 
-			if (!userData) return json(data({ success: false, code: 404, message: '-ERR user not found' }))
-			if (emailHash !== userData.email) return json(data({ success: false, code: 401, message: '-ERR wrong credentials given' }))
+			if (!userData) {
+				return json(data({
+					success: false,
+					code: 404,
+					type: 'sign-in',
+					message: '-ERR user not found',
+				}))
+			}
+
+			if (emailHash !== userData.email) {
+				return json(data({
+					success: false,
+					code: 401,
+					type: 'sign-in',
+					message: '-ERR wrong credentials given',
+				}))
+			}
 
 			await sendTxEmail<SignInTxEmailData>(system_id, userData, {
 				template: {
@@ -50,9 +65,19 @@ export const handler: Handlers = {
 				to: email,
 			})
 
-			return json(data({ success: true, code: 202, message: `+OK ${resend ? "we've resent it" : 'verification email has been sent'}` }))
+			return json(data({
+				success: true,
+				code: 202,
+				type: 'sign-in',
+				message: `+OK ${resend ? "we've resent it" : 'verification email has been sent'}`,
+			}))
 		} catch (error: unknown) {
-			return json(data({ success: false, code: 500, message: `-ERR ${error instanceof Error ? error.message : 'unknown error'}` }))
+			return json(data({
+				success: false,
+				code: 500,
+				type: 'sign-in',
+				message: `-ERR ${error instanceof Error ? error.message : 'unknown error'}`,
+			}))
 		}
 	},
 }
