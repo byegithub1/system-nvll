@@ -1,7 +1,7 @@
 import * as smtp from '../../smtp/nodemailer.ts'
 
 import Mail from 'nodemailer/lib/mailer'
-import createToken from './create-token.ts'
+import tokenFactory from '../jwt/factory.ts'
 
 import { load } from '$std/dotenv/mod.ts'
 
@@ -34,7 +34,7 @@ export default async function sendTxEmail<T extends TxEmailTemplateData>(system_
 
 	// Generate access token if not provided in templateData
 	if (!('token' in templateData) || !templateData.token) {
-		const { accessToken }: { accessToken: string } = await createToken(system_id, user)
+		const { accessToken }: { accessToken: string } = await tokenFactory(system_id, user)
 		;(templateData as T & { token: string }).token = accessToken
 	}
 

@@ -1,13 +1,12 @@
-import data from '../../../../helpers/utils/middleware/data.ts'
-import sendTxEmail from '../../../../helpers/utils/handler/send-tx-email.ts'
-import sendResponse from '../../../../helpers/utils/handler/send-response.ts'
-import signUpTxEmailTemplate from '../../../../helpers/smtp/templates/sign-up-tx/render.ts'
+import sendTxEmail from '../../../../helpers/utils/emails/send-tx-email.ts'
+import signUpTxEmailTemplate from '../../../../helpers/utils/emails/templates/sign-up-tx/render.ts'
 
-import SystemKv, { ulid } from '../../../../helpers/utils/db.ts'
+import SystemKv, { ulid } from '../../../../helpers/database/system-kv.ts'
 
 import { encodeHex } from '$std/encoding/hex.ts'
 import { FreshContext, Handlers } from '$fresh/server.ts'
 import { dirname, fromFileUrl, join } from '$std/path/mod.ts'
+import { data, json } from '../../../../helpers/utils/responses.ts'
 
 interface SignUpTxEmailData extends TxEmailTemplateData {
 	username: string
@@ -30,7 +29,7 @@ export const handler: Handlers = {
 			const emailHash: string = encodeHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${system_id}:${email}`)))
 			const user: Deno.KvEntryMaybe<unknown> = await SystemKv.get(['system_nvll', 'users', emailHash])
 
-			if (user.value) return sendResponse(data({ success: false, code: 400, message: '-ERR user already exists' }))
+			if (user.value) return json(data({ success: false, code: 400, message: '-ERR user already exists' }))
 
 			const newUser: UserSchema = {
 				ulid: ulid(),
@@ -82,9 +81,9 @@ export const handler: Handlers = {
 			})
 			await SystemKv.set(['system_nvll', 'users', newUser.email], newUser)
 
-			return sendResponse(data({ success: true, code: 202, message: '+OK verification email sent' }))
+			return json(data({ success: true, code: 202, message: '+OK verification email sent' }))
 		} catch (error: unknown) {
-			return sendResponse(data({ success: false, code: 500, message: `-ERR ${error instanceof Error ? error.message : 'unknown error'}` }))
+			return json(data({ success: false, code: 500, message: `-ERR ${error instanceof Error ? error.message : 'unknown error'}` }))
 		}
 	},
 }

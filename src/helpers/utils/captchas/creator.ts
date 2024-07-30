@@ -1,4 +1,4 @@
-import SystemKv, { ulid } from '../db.ts'
+import SystemKv, { ulid } from '../../database/system-kv.ts'
 
 import { encodeBase64Url } from '$std/encoding/base64url.ts'
 
@@ -19,7 +19,7 @@ const DEFAULT_RESET_TIME: number = 60 * 60 // 60 minutes in seconds
  * @param {string} [action='/api/v0/entrance/sign-in'] - The action associated with the captcha.
  * @return {Promise<CaptchaSchema>} A promise that resolves to the created captcha.
  */
-export default async function createCaptcha(remoteIp: string, email: string, action: string = '/api/v0/entrance/sign-in'): Promise<CaptchaSchema> {
+export default async function creator(remoteIp: string, email: string, action: string = '/api/v0/entrance/sign-in'): Promise<CaptchaSchema> {
 	const history = await SystemKv.get(['system_nvll', 'captchas', remoteIp]) as Deno.KvEntryMaybe<CaptchaSchema>
 	const captchaBaseData: CaptchaBaseSchema = {
 		ulid: ulid(),

@@ -1,6 +1,6 @@
-import SystemKv from '../db.ts'
-import data from '../middleware/data.ts'
+import SystemKv from '../../database/system-kv.ts'
 
+import { data } from '../responses.ts'
 import { encodeHex } from '$std/encoding/hex.ts'
 
 interface CaptchaSolution {
@@ -18,7 +18,7 @@ interface CaptchaSolution {
  * @param {ServerData} payload - The server data containing the captcha request.
  * @return {Promise<ServerData>} The server data response containing the validation result.
  */
-export default async function captchaValidator(system_id: string, payload: ServerData): Promise<ServerData> {
+export default async function validator(system_id: string, payload: ServerData): Promise<ServerData> {
 	const request: CaptchaSchema = payload.data as unknown as CaptchaSchema
 	const emailHash: string = encodeHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${system_id}:${request.email}`)))
 	const [user, storedCaptcha] = await Promise.all([

@@ -36,6 +36,19 @@ declare global {
 		feedback?: string
 	}
 
+	interface SentinelData {
+		headers: Headers
+		rateLimited: boolean
+	}
+
+	interface MiddlewareStaticProps {
+		response: Response
+		pathname: string
+		remoteIp: string
+		method: string
+		startTime: number
+	}
+
 	interface HttpPayload {
 		[key: string]: unknown
 	}
@@ -58,13 +71,21 @@ declare global {
 
 	type TxEmailTemplateData = Record<string, unknown>
 
-	type Schemas = SystemSchema | UserSchema | CaptchaSchema
+	type Schemas = SystemSchema | TrafficSchema | UserSchema | CaptchaSchema
 
 	interface SystemSchema {
 		ulid: string
 		keys: {
 			hmac: string
 		}
+	}
+
+	interface TrafficSchema {
+		ulid: string
+		endpoint: string
+		method: string
+		processing: boolean
+		timestamp: number
 	}
 
 	interface UserSchema {

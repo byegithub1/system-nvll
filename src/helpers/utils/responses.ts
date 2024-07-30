@@ -3,7 +3,7 @@
  * @param {Partial<ServerData>} params - The data to be wrapped.
  * @return {ServerData} A ServerData object with the provided data and default values for missing properties.
  */
-export default function data(params: Partial<ServerData>): ServerData {
+export function data(params: Partial<ServerData>): ServerData {
 	const data: ServerData = {
 		success: params.success ?? false,
 		code: params.code ?? 500,
@@ -15,4 +15,13 @@ export default function data(params: Partial<ServerData>): ServerData {
 	}
 
 	return data
+}
+
+/**
+ * @description Sends a server data response as a JSON object.
+ * @param {ServerData} data - The server data to send as a response.
+ * @returns {Response} The response object.
+ */
+export function json(data: ServerData): Response {
+	return Response.json(data, { status: data.code })
 }

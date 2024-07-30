@@ -3,7 +3,7 @@
  * @param {Request} request - The incoming WebSocket request.
  * @returns {Response} A Response object representing the upgraded WebSocket connection.
  */
-export default function handle(request: Request): Response {
+export default function socket(request: Request): Response {
 	try {
 		const { socket, response }: { socket: WebSocket; response: Response } = Deno.upgradeWebSocket(request)
 

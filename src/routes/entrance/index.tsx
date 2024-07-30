@@ -1,9 +1,8 @@
+import SystemKv from '../../helpers/database/system-kv.ts'
 import Captcha from '../../components/entrance/captcha.tsx'
 import BackButton from '../../islands/entrance/back-button.tsx'
-import createCaptcha from '../../helpers/utils/common/captcha.ts'
+import captchaCreator from '../../helpers/utils/captchas/creator.ts'
 import IslandsEntranceForm from '../../islands/entrance/entrance-form.tsx'
-
-import SystemKv from '../../helpers/utils/db.ts'
 
 import { JSX } from 'preact'
 import { asset } from '$fresh/runtime.ts'
@@ -22,7 +21,7 @@ export const handler: Handlers<AfterServerData> = {
 		const serverData: AfterServerData = cookies.data ? JSON.parse(decodeURIComponent(cookies.data)) : { success: true, code: 200 }
 		const remoteIp: string = request.headers.get('X-Forwarded-For') ?? ctx.remoteAddr.hostname ?? (serverData.data?.remoteIp as string)
 		const action: string = serverData.code === 404 ? '/api/v0/entrance/sign-up' : '/api/v0/entrance/sign-in'
-		const newCaptcha: CaptchaSchema = await createCaptcha(remoteIp, serverData.data?.email as string, action)
+		const newCaptcha: CaptchaSchema = await captchaCreator(remoteIp, serverData.data?.email as string, action)
 
 		await SystemKv.set(['system_nvll', 'captchas', remoteIp], newCaptcha)
 

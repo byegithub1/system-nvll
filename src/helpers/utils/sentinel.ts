@@ -10,24 +10,24 @@ const RATE_LIMIT_CLIENTS: Map<string, RateLimitMap> = new Map<string, RateLimitM
 
 /**
  * @description Rate limiting function.
- * @param {string} clientIP - The client's IP address.
+ * @param {string} remoteIp - The client's IP address.
  * @param {string} method - The HTTP method.
  * @return {{ limited: boolean; count: number }} An object with a `limited` boolean indicating if the client is
  * rate limited and a `count` number indicating the number of requests the client has made in the rate limiting window.
  */
-function rateLimit(clientIP: string, method: string): { limited: boolean; count: number } {
+function rateLimit(remoteIp: string, method: string): { limited: boolean; count: number } {
 	if (RATE_LIMIT_METHOD_EXCLUDE.includes(method)) return { limited: false, count: 0 }
 
 	const now: number = Date.now()
-	const clientData: RateLimitMap | undefined = RATE_LIMIT_CLIENTS.get(clientIP)
+	const clientData: RateLimitMap | undefined = RATE_LIMIT_CLIENTS.get(remoteIp)
 
 	if (now - (clientData?.timestamp ?? now) > RATE_LIMIT_WINDOW) {
 		const newClientData: RateLimitMap = { count: 1, timestamp: now }
-		RATE_LIMIT_CLIENTS.set(clientIP, newClientData)
+		RATE_LIMIT_CLIENTS.set(remoteIp, newClientData)
 		return { limited: false, count: newClientData.count }
 	} else {
 		const updatedClientData: RateLimitMap = { count: (clientData?.count ?? 0) + 1, timestamp: now }
-		RATE_LIMIT_CLIENTS.set(clientIP, updatedClientData)
+		RATE_LIMIT_CLIENTS.set(remoteIp, updatedClientData)
 		return { limited: updatedClientData.count > RATE_LIMIT, count: updatedClientData.count }
 	}
 }
@@ -36,21 +36,14 @@ function rateLimit(clientIP: string, method: string): { limited: boolean; count:
  * @description Applies various security headers to the response headers and logs the request.
  * @param {string} pathname - The pathname of the request.
  * @param {Headers} headers - The headers of the response.
- * @param {string} clientIP - The IP address of the client.
+ * @param {string} remoteIp - The IP address of the client.
  * @param {string} method - The HTTP method of the request.
  * @param {number} status - The status code of the response.
  * @param {string} responseTime - The response time of the request.
- * @return {{ headers: Headers; rateLimited: boolean }} An object with the updated headers and a boolean indicating if the client is rate limited.
+ * @return {SentinelData} An object with the updated headers and a boolean indicating if the client is rate limited.
  */
-export function sentinel(
-	pathname: string,
-	headers: Headers,
-	clientIP: string,
-	method: string,
-	status: number,
-	responseTime: string,
-): { headers: Headers; rateLimited: boolean } {
-	const { limited, count }: { limited: boolean; count: number } = rateLimit(clientIP, method)
+export function sentinel(pathname: string, headers: Headers, remoteIp: string, method: string, status: number, responseTime: string): SentinelData {
+	const { limited, count }: { limited: boolean; count: number } = rateLimit(remoteIp, method)
 
 	headers.set('Access-Control-Allow-Origin', 'https://nvll.me, https://system-nvll.deno.dev' as const)
 	// Prevent caching of sensitive information
@@ -106,7 +99,7 @@ export function sentinel(
 	headers.delete('X-AspNet-Version' as const)
 	headers.delete('X-AspNetMvc-Version' as const)
 
-	console.log(`${new Date().toISOString()}; ${clientIP}; ${method}:${status}; ${responseTime}; protected; ${pathname}`)
+	console.log(`${new Date().toISOString()}; ${remoteIp}; ${method}:${status}; ${responseTime}; protected; ${pathname}`)
 
 	return { headers, rateLimited: limited }
 }

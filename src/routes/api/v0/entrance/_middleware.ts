@@ -1,14 +1,14 @@
-import SystemKv from '../../../../helpers/utils/db.ts'
-import data from '../../../../helpers/utils/middleware/data.ts'
-import responder from '../../../../helpers/utils/middleware/responder.ts'
-import captchaValidator from '../../../../helpers/utils/middleware/captcha-validator.ts'
-import payloadExtractor from '../../../../helpers/utils/middleware/payload-extractor.ts'
-import CaptchaValidationSchema from '../../../../helpers/utils/payload/validations/captcha.validation.ts'
-import EntranceValidationSchema from '../../../../helpers/utils/payload/validations/entrance.validation.ts'
+import responder from '../../../../helpers/utils/responder.ts'
+import SystemKv from '../../../../helpers/database/system-kv.ts'
+import payloadExtractor from '../../../../helpers/utils/payload.ts'
+import validator from '../../../../helpers/utils/validations/validator.ts'
+import captchaValidator from '../../../../helpers/utils/captchas/validator.ts'
+import CaptchaValidationSchema from '../../../../helpers/utils/validations/captcha.ts'
+import EntranceValidationSchema from '../../../../helpers/utils/validations/entrance.ts'
 
 import { ZodSchema } from 'zod'
 import { FreshContext } from '$fresh/server.ts'
-import { validator } from '../../../../helpers/utils/middleware/validator.ts'
+import { data } from '../../../../helpers/utils/responses.ts'
 
 const SUPPORTED_CT: readonly string[] = ['application/x-www-form-urlencoded']
 

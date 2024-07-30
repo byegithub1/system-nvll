@@ -1,6 +1,5 @@
-import data from './data.ts'
-
 import { z } from 'zod'
+import { data } from '../responses.ts'
 
 /**
  * @description Validates the payload against the provided schema and returns a strongly typed ServerData object.
@@ -8,7 +7,7 @@ import { z } from 'zod'
  * @param {HttpPayload} payload - The data to be validated.
  * @returns {ServerData} - A strongly typed ServerData object with the validation result.
  */
-export function validator<T extends z.ZodTypeAny>(schema: T, payload: HttpPayload): ServerData {
+export default function validator<T extends z.ZodTypeAny>(schema: T, payload: HttpPayload): ServerData {
 	const result: z.SafeParseReturnType<T, HttpPayload> = schema.safeParse(payload)
 
 	if (result.success) {

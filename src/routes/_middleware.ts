@@ -1,10 +1,12 @@
-import handleWebSocket from '../helpers/socket/index.ts'
+import route from '../helpers/utils/middlewares/route.ts'
+import text from '../helpers/utils/middlewares/worker.ts'
+import socket from '../helpers/utils/middlewares/socket.ts'
+import worker from '../helpers/utils/middlewares/worker.ts'
 
-import SystemKv, { ulid } from '../helpers/utils/db.ts'
+import SystemKv, { ulid } from '../helpers/database/system-kv.ts'
 
 import { FreshContext } from '$fresh/server.ts'
 import { encodeHex } from '$std/encoding/hex.ts'
-import { sentinel } from '../helpers/utils/sentinel.ts'
 
 export class AppContext {
 	public readonly system_id: string
@@ -80,84 +82,53 @@ export class AppContext {
 	}
 }
 
-/**
- * @description Middleware for handling requests.
- * @param {Request} request - The incoming request object.
- * @param {FreshContext<SystemState>} ctx - The fresh context object with the system state.
- * @returns {Promise<Response>} - A promise that resolves to a Response object.
- */
 export async function handler(request: Request, ctx: FreshContext<SystemState>): Promise<Response> {
 	try {
 		ctx.state.context = AppContext.newInstance()
 
-		let response: Response
-
 		const url: URL = new URL(request.url)
-		const clientIP: string = request.headers.get('X-Forwarded-For') || ctx.remoteAddr.hostname
-
-		// Handle 404 Not Found.
-		if (ctx.destination === 'notFound') return new Response('-ERR 404 not found', { status: 404 })
-
-		// Handle WebSockets.
-		if (request.headers.get('upgrade')?.toLowerCase() === 'websocket') return handleWebSocket(request)
-
+		const remoteIp: string = request.headers.get('X-Forwarded-For') || ctx.remoteAddr.hostname
 		const startTime: number = performance.now()
 
-		// Handle static files.
+		// Handle 404 Not Found
+		if (ctx.destination === 'notFound') return new Response('-ERR 404 not found', { status: 404 })
+
+		// Handle WebSockets
+		if (request.headers.get('upgrade')?.toLowerCase() === 'websocket') return socket(request)
+
+		// Handle static files and workers
 		if (ctx.destination === 'static') {
-			// Handle workers.
-			if (url.pathname.startsWith('/workers/') && url.pathname.endsWith('.js')) {
-				response = await ctx.next()
+			const response: Response = await ctx.next()
+			const workerPathname: boolean = url.pathname.startsWith('/workers/')
+			const jsFile: boolean = url.pathname.endsWith('.js')
+			const pgpPathname: boolean = url.pathname.startsWith('/assets/pgp/')
+			const ascFile: boolean = url.pathname.endsWith('.asc')
 
-				const headers: Headers = new Headers(response.headers)
-				const responseTime: string = `${(performance.now() - startTime).toFixed(2)}ms`
-				const { headers: securedHeaders, rateLimited }: { headers: Headers; rateLimited: boolean } = sentinel(
-					url.pathname,
-					headers,
-					clientIP,
-					request.method,
-					response.status,
-					responseTime,
-				)
-
-				if (rateLimited) return new Response(null, { status: 429, headers: securedHeaders })
-
-				headers.set('Content-Type', 'application/javascript' as const)
-				headers.set('X-Response-Time', responseTime)
-
-				return new Response(response.body, {
-					status: response.status,
-					statusText: response.statusText,
-					headers: securedHeaders,
-				})
+			const staticProps: MiddlewareStaticProps = {
+				response,
+				pathname: url.pathname,
+				remoteIp,
+				method: request.method,
+				startTime,
 			}
-			return await ctx.next()
+
+			if (pgpPathname && ascFile) return text(staticProps)
+			if (workerPathname && jsFile) return worker(staticProps)
+
+			return response
 		}
 
-		// Handle routes.
-		if (ctx.destination !== 'route') return await ctx.next()
+		// Handle routes
+		if (ctx.destination === 'route') {
+			const { response, rateLimited }: { response: Response; rateLimited: boolean } = await route(request, ctx, url, remoteIp, startTime)
 
-		response = await ctx.next()
+			if (rateLimited) return new Response(null, { status: 429, headers: response.headers })
 
-		const responseTime: string = `${(performance.now() - startTime).toFixed(2)}ms`
-		const { headers: securedHeaders, rateLimited }: { headers: Headers; rateLimited: boolean } = sentinel(
-			url.pathname,
-			new Headers(response.headers),
-			clientIP,
-			request.method,
-			response.status,
-			responseTime,
-		)
+			return response
+		}
 
-		if (rateLimited) return new Response(null, { status: 429, headers: securedHeaders })
-
-		securedHeaders.set('X-Response-Time', responseTime)
-
-		return new Response(response.body, {
-			status: response.status,
-			statusText: response.statusText,
-			headers: securedHeaders,
-		})
+		// Default fallback
+		return ctx.next()
 	} catch (error) {
 		return new Response(`-ERR internal server error: ${error.message}`, { status: 500 })
 	}
