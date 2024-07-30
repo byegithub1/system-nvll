@@ -7,6 +7,11 @@ import { sentinel } from '../sentinel.ts'
 const PROTECTED_METHODS: ReadonlySet<string> = new Set(['POST', 'PUT', 'DELETE', 'PATCH'])
 const OPEN_METHODS: ReadonlySet<string> = new Set(['GET', 'HEAD', 'OPTIONS', 'CONNECT', 'TRACE'])
 
+/**
+ * @description Asynchronously handles a route request.
+ * @param {MiddlewareRouteProps} request - The request object containing the request, context, URL, remote IP, and start time.
+ * @return {Promise<Response>} A promise that resolves to a Response object.
+ */
 export default async function route({ request, ctx, url, remoteIp, startTime }: MiddlewareRouteProps): Promise<Response> {
 	const method: string = request.method
 	const trafficJam: boolean = PROTECTED_METHODS.has(method) || !OPEN_METHODS.has(method)

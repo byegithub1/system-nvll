@@ -3,6 +3,12 @@ import SystemKv from '../helpers/database/system-kv.ts'
 import { FreshContext, Handlers } from '$fresh/server.ts'
 
 export const handler: Handlers<AfterServerDataSchema> = {
+	/**
+	 * @description Asynchronously handles a GET request to retrieve traffic jam data.
+	 * @param {Request} request - the incoming request object
+	 * @param {FreshContext} ctx - the fresh context object
+	 * @return {Promise<Response>} a promise that resolves to a Response object containing the traffic jam data
+	 */
 	async GET(request: Request, ctx: FreshContext): Promise<Response> {
 		const url = new URL(request.url)
 

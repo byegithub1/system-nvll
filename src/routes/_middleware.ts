@@ -82,6 +82,12 @@ export class AppContext {
 	}
 }
 
+/**
+ * @description Handles incoming requests and returns a response.
+ * @param {Request} request - The incoming request object.
+ * @param {FreshContext<SystemState>} ctx - The context object containing system state.
+ * @return {Promise<Response>} A promise that resolves to the response object.
+ */
 export async function handler(request: Request, ctx: FreshContext<SystemState>): Promise<Response> {
 	try {
 		ctx.state.context = AppContext.newInstance()

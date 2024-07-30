@@ -7,6 +7,11 @@ export const uuidv7: Generator = generator({
 	dashes: true,
 } as GeneratorOptions)
 
-export function parse(uuidv7: string) {
+/**
+ * @description Parses a UUIDv7 string and returns its timestamp component.
+ * @param {string} uuidv7 - The UUIDv7 string to parse.
+ * @return {number} The timestamp component of the UUIDv7 string.
+ */
+export function parse(uuidv7: string): number {
 	return timestamp(uuidv7)
 }
