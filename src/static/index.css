@@ -29,6 +29,7 @@
    * ? ----- LIST OF CONTENTS -----
    * ! GLOBAL SECTION -----
    * ! PAGE CONTAINER SECTION -----
+   * ! NOTIFICATIONS SECTION -----
    * ! NO SCRIPT ALERT SECTION -----
    * ! NAVBAR SECTION -----
    * ! LANDING SECTION -----
@@ -392,6 +393,50 @@ section.page-container .container-image-overlay {
 }
 /**!
  * !END PAGE CONTAINER SECTION -----
+ */
+
+/**!
+ * ! NOTIFICATIONS SECTION -----
+ */
+main.notifications .popup {
+  @apply fixed
+  bottom-0
+  right-0
+  mb-4
+  mr-4
+  w-56
+  z-10;
+}
+main.notifications .popup .wrapper {
+  @apply bg-white
+  rounded-lg
+  shadow-lg
+  p-4;
+}
+main.notifications .popup .wrapper header {
+  @apply flex
+  items-center
+  justify-between
+  mb-2;
+}
+main.notifications .popup .wrapper header .title {
+  @apply flex
+  items-center;
+}
+main.notifications .popup .wrapper header .title img {
+  @apply h-8
+  w-8
+  mr-2;
+}
+main.notifications .popup .wrapper header .title span {
+  @apply font-bold
+  text-sm;
+}
+main.notifications .popup .wrapper p {
+  @apply text-sm;
+}
+/**!
+ * ! END NOTIFICATIONS SECTION -----
  */
 
 /**!

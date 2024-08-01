@@ -1,3 +1,5 @@
+import Notification from '../components/notifications.tsx'
+
 import { JSX } from 'preact'
 import { type PageProps } from '$fresh/server.ts'
 
@@ -34,6 +36,7 @@ export default function App({ Component }: PageProps): JSX.Element {
 			</head>
 			<body>
 				<Component />
+				<Notification />
 				{script.reverse().map((link) => <script {...link} />)}
 			</body>
 		</html>

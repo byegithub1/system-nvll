@@ -12,7 +12,7 @@ const transporter: Transporter<SentMessageInfo> = nodemailer.createTransport({
 	secure: env['SMTP_SECURE'] as unknown as boolean,
 	auth: {
 		user: env['SMTP_USER'] as string,
-		pass: env['SMTP_PASSWORD'] as string,
+		pass: decodeURIComponent(env['SMTP_PASSWORD'] as string),
 	},
 } as SentMessageInfo)
 
