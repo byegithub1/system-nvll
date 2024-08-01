@@ -1,4 +1,4 @@
-import SystemKv from '../helpers/database/system-kv.ts'
+import SystemKv from '../../../../helpers/database/system-kv.ts'
 
 import { FreshContext, Handlers } from '$fresh/server.ts'
 

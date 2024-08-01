@@ -36,7 +36,7 @@ export default async function route({ request, ctx, url, remoteIp, startTime }: 
 
 			if (rateLimited) return new Response(null, { status: 429, headers })
 
-			headers.set('location', '/traffic-jam')
+			headers.set('location', '/api/v0/traffic-jam')
 
 			return new Response(null, { status: 303, headers })
 		} else {
