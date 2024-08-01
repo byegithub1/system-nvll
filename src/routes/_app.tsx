@@ -1,6 +1,6 @@
 import Notification from '../components/notifications.tsx'
 
-import { JSX } from 'preact'
+import { JSX } from 'preact/jsx-runtime'
 import { type PageProps } from '$fresh/server.ts'
 
 export default function App({ Component }: PageProps): JSX.Element {

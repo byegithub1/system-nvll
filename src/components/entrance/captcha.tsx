@@ -1,6 +1,6 @@
 import IslandsCaptchForm from '../../islands/entrance/captcha-form.tsx'
 
-import { JSX } from 'preact'
+import { JSX } from 'preact/jsx-runtime'
 import { asset } from '$fresh/runtime.ts'
 
 interface Props {

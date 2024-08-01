@@ -1,4 +1,4 @@
-import { JSX } from 'preact'
+import { JSX } from 'preact/jsx-runtime'
 
 interface Props {
 	props: AfterServerDataSchema

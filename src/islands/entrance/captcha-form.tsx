@@ -1,6 +1,6 @@
 import OceansCaptchaForm from '../../oceans/entrance/captcha-form.tsx'
 
-import { JSX } from 'preact'
+import { JSX } from 'preact/jsx-runtime'
 import { useCallback, useEffect, useMemo, useReducer, useRef } from 'preact/hooks'
 
 interface Props {

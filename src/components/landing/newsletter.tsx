@@ -1,4 +1,4 @@
-import { JSX } from 'preact'
+import { JSX } from 'preact/jsx-runtime'
 
 export default function Newsletter(): JSX.Element {
 	return (

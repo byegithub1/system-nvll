@@ -4,7 +4,7 @@ import BackButton from '../../islands/entrance/back-button.tsx'
 import captchaCreator from '../../helpers/utils/captchas/creator.ts'
 import IslandsEntranceForm from '../../islands/entrance/entrance-form.tsx'
 
-import { JSX } from 'preact'
+import { JSX } from 'preact/jsx-runtime'
 import { asset } from '$fresh/runtime.ts'
 import { getCookies } from '$std/http/cookie.ts'
 import { FreshContext, Handlers, PageProps } from '$fresh/server.ts'

@@ -1,4 +1,4 @@
-import { JSX } from 'preact'
+import { JSX } from 'preact/jsx-runtime'
 import { asset } from '$fresh/runtime.ts'
 import { useEffect, useState } from 'preact/hooks'
 

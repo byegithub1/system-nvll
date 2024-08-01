@@ -3,7 +3,7 @@ import Quote from '../../components/landing/quote.tsx'
 import Services from '../../components/landing/services.tsx'
 import Newsletter from '../../components/landing/newsletter.tsx'
 
-import { JSX } from 'preact'
+import { JSX } from 'preact/jsx-runtime'
 import { asset } from '$fresh/runtime.ts'
 
 export default function Home(): JSX.Element {
