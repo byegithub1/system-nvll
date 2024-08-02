@@ -1,10 +1,13 @@
+import saslprep from 'saslprep'
 import sendTxEmail from '../../../../helpers/utils/emails/send-tx-email.ts'
 import signUpTxEmailTemplate from '../../../../helpers/utils/emails/templates/sign-up-tx/render.ts'
 
 import SystemKv, { ulid } from '../../../../helpers/database/system-kv.ts'
 
-import { encodeHex } from '$std/encoding/hex.ts'
+import { sha256 } from '@noble/hashes/sha256'
+import { pbkdf2Async } from '@noble/hashes/pbkdf2'
 import { FreshContext, Handlers } from '$fresh/server.ts'
+import { encodeBase64Url } from '$std/encoding/base64url.ts'
 import { dirname, fromFileUrl, join } from '$std/path/mod.ts'
 import { data, json } from '../../../../helpers/utils/responses.ts'
 
@@ -22,11 +25,12 @@ export const handler: Handlers = {
 	 * @returns {Promise<Response>} A promise that resolves to a Response object.
 	 */
 	async POST(_request: Request, ctx: FreshContext): Promise<Response> {
-		const { remoteIp, email } = ctx.state as { remoteIp: string; email: string }
+		const { remoteIp, email, password } = ctx.state as { remoteIp: string; email: string; password: string }
 		const system_id: string = SystemKv.id(ctx)
+		const currentTimestamp: number = Math.trunc(Date.now() / 1000)
 
 		try {
-			const emailHash: string = encodeHex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${system_id}:${email}`)))
+			const emailHash: string = encodeBase64Url(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${system_id}:${email}`)))
 			const user: Deno.KvEntryMaybe<unknown> = await SystemKv.get(['system_nvll', 'users', emailHash])
 
 			if (user.value) {
@@ -40,19 +44,21 @@ export const handler: Handlers = {
 
 			const newUser: UserSchema = {
 				ulid: ulid(),
-				username: email.split('@')[0],
-				email: emailHash,
-				im_address: `${email.split('@')[0]}@nvll.me`,
-				scram_sha256: {
-					s: encodeHex(crypto.getRandomValues(new Uint8Array(24))),
-					p: 'inactive',
-					i: 8192 * Math.abs(crypto.getRandomValues(new Int8Array(1))[0]),
-					b: 32,
-					reservation: {
-						rsv: 'created by system',
-						created_at: Math.floor(Date.now() / 1000),
-					},
+				name: {
+					value: '',
+					updated_at: currentTimestamp,
 				},
+				username: email.split('@')[0],
+				email: {
+					value: emailHash,
+					verified: false,
+					updated_at: currentTimestamp,
+				},
+				im_address: {
+					value: `${email.split('@')[0]}@nvll.me`,
+					updated_at: currentTimestamp,
+				},
+				zero_access: await zeroAccess(password),
 				messages: {
 					im: {
 						inbox: [],
@@ -61,12 +67,11 @@ export const handler: Handlers = {
 						consecutive_success_count: 0,
 					},
 				},
-				is_active: false,
 				access_token: '',
 				refresh_token: '',
 				remoteIp: remoteIp,
-				created_at: Math.floor(Date.now() / 1000),
-				updated_at: Math.floor(Date.now() / 1000),
+				created_at: currentTimestamp,
+				updated_at: currentTimestamp,
 			}
 
 			await sendTxEmail<SignUpTxEmailData>(system_id, newUser, {
@@ -86,7 +91,7 @@ export const handler: Handlers = {
 				},
 				to: email,
 			})
-			await SystemKv.set(['system_nvll', 'users', newUser.email], newUser)
+			await SystemKv.set(['system_nvll', 'users', newUser.email.value], newUser)
 
 			return json(data({
 				success: true,
@@ -103,4 +108,29 @@ export const handler: Handlers = {
 			}))
 		}
 	},
+}
+
+/**
+ * @description Generates Scram credentials for a given password.
+ * @param {string} password - The password for the credentials.
+ * @return {Promise<UserSchema['zero_access']>} The created Scram credentials.
+ */
+async function zeroAccess(password: string): Promise<UserSchema['zero_access']> {
+	const timestamp: number = Math.trunc(Date.now() / 1000)
+	const salt: Uint8Array = crypto.getRandomValues(new Uint8Array(32))
+	const normalizedPassword: string = saslprep(password)
+	const iterations: number = 8192 * Math.abs(crypto.getRandomValues(new Int8Array(1))[0])
+	const saltedPassword: Uint8Array = await pbkdf2Async(sha256, normalizedPassword, salt, { c: iterations, dkLen: 32 })
+
+	return {
+		s: encodeBase64Url(salt),
+		p: encodeBase64Url(saltedPassword),
+		i: iterations,
+		b: 32,
+		reservation: {
+			rsv: 'created by system',
+			created_at: timestamp,
+		},
+		updated_at: timestamp,
+	} as UserSchema['zero_access']
 }

@@ -9,7 +9,7 @@ import creator from './creator.ts'
  */
 export default async function tokenFactory(system_id: string, user: UserSchema): Promise<{ accessToken: string; refreshToken: string }> {
 	return {
-		accessToken: await creator(system_id, { email: user.email, authType: 'access' }, 3) as string,
-		refreshToken: await creator(system_id, { email: user.email, authType: 'refresh' }, 60) as string,
+		accessToken: await creator(system_id, { email: user.email.value, authType: 'access' }, 3) as string,
+		refreshToken: await creator(system_id, { email: user.email.value, authType: 'refresh' }, 60) as string,
 	}
 }

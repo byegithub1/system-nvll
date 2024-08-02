@@ -102,10 +102,21 @@ declare global {
 
 	interface UserSchema {
 		ulid: string
+		name: {
+			value: string
+			updated_at: number
+		}
 		username: string
-		email: string
-		im_address: string
-		scram_sha256: {
+		email: {
+			value: string
+			verified: boolean
+			updated_at: number
+		}
+		im_address: {
+			value: string
+			updated_at: number
+		}
+		zero_access: {
 			s: string
 			p: string
 			i: number
@@ -114,6 +125,7 @@ declare global {
 				rsv: string
 				created_at: number
 			}
+			updated_at: number
 		}
 		messages: {
 			im: {
@@ -123,7 +135,6 @@ declare global {
 				consecutive_success_count: number
 			}
 		}
-		is_active: boolean
 		access_token: string
 		refresh_token: string
 		remoteIp: string

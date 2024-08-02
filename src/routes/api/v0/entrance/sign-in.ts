@@ -38,7 +38,7 @@ export const handler: Handlers = {
 				}))
 			}
 
-			if (emailHash !== userData.email) {
+			if (emailHash !== userData.email.value) {
 				return json(data({
 					success: false,
 					code: 401,
