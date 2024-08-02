@@ -80,7 +80,7 @@
 
   line-height: 1.5;
   font-weight: 400;
-  color-scheme: light dark;
+  color-scheme: light;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   white-space: pre-line;
@@ -139,6 +139,18 @@ a:link,
 a:visited,
 a:active {
   @apply text-blue-800;
+}
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  @apply border-none;
+}
+input[type="checkbox"] {
+  @apply border
+  border-opacity-50
+  focus:outline-none
+  focus:ring-0
+  focus:ring-offset-0;
 }
 h1 {
   font-size: 90px;
@@ -208,6 +220,13 @@ button {
   disabled:pointer-events-none
   disabled:opacity-50;
 }
+img.button-spinner {
+  @apply inline
+  w-4
+  h-4
+  me-3
+  animate-spin;
+}
 .pre {
   @apply sm:text-[13px]
   sm:leading-[15px]
@@ -223,10 +242,7 @@ button {
   rounded-lg
   text-sm
   focus:!border-red-800
-  focus:!ring-red-800
-  dark:bg-neutral-800
-  dark:border-neutral-700
-  dark:text-neutral-400;
+  focus:!ring-red-800;
 }
 .alert-danger {
   @apply text-justify
@@ -259,10 +275,7 @@ button {
   before:me-6
   after:flex-1
   after:border-t
-  after:ms-6
-  dark:text-neutral-500
-  dark:before:border-neutral-600
-  dark:after:border-neutral-600;
+  after:ms-6;
 }
 @media (max-width: 1024px) {
   h1 {
@@ -391,6 +404,16 @@ section.page-container .container-image-overlay {
     @apply max-w-full;
   }
 }
+@media (max-width: 640px) {
+  section.page-container {
+    @apply min-h-[100vh];
+  }
+}
+@media (max-width: 375px) {
+  section.page-container {
+    @apply min-h-[125vh];
+  }
+}
 /**!
  * !END PAGE CONTAINER SECTION -----
  */
@@ -443,8 +466,7 @@ main.notifications .popup .wrapper p {
  * ! NO SCRIPT ALERT SECTION -----
  */
 section.page-container section.noscript-alert {
-  @apply bg-dim
-  dark:bg-gray-100;
+  @apply bg-dim;
 }
 section.page-container section.noscript-alert .wrapper {
   @apply max-w-screen-xl
@@ -494,8 +516,7 @@ section.page-container section.navbar header .wrapper .left a .subtitle {
   @apply self-center
   text-2xl
   font-semibold
-  whitespace-nowrap
-  dark:text-white;
+  whitespace-nowrap;
 }
 section.page-container section.navbar header .wrapper .right {
   @apply flex
@@ -505,13 +526,11 @@ section.page-container section.navbar header .wrapper .right {
 }
 section.page-container section.navbar header .wrapper .right a.support {
   @apply flex
-  text-sm
-  dark:text-white;
+  text-sm;
 }
 section.page-container section.navbar header .wrapper .right a.entrance {
   @apply text-sm
-  text-blue-600
-  dark:text-blue-500;
+  text-blue-600;
 }
 section.page-container section.navbar footer {
   @apply bg-dim;
@@ -532,9 +551,6 @@ section.page-container section.navbar footer .wrapper ul {
   space-x-8
   rtl:space-x-reverse
   text-sm;
-}
-section.page-container section.navbar footer .wrapper ul li {
-  @apply dark:text-white;
 }
 /**!
  * ! END NAVBAR SECTION -----
@@ -791,8 +807,7 @@ section.page-container section.quote .wrapper blockquote img {
   md:start-8
   lg:start-40
   size-16
-  text-gray
-  dark:text-neutral-700;
+  text-gray;
 }
 section.page-container section.quote .wrapper blockquote .text {
   @apply relative
@@ -1177,9 +1192,8 @@ section.page-container .footer .eth-address a img {
 /**!
  * ! ENTRANCE SECTION -----
  */
-section.page-container section.login,
-section.page-container section.captcha,
-section.page-container section.scram {
+section.page-container section.entrance,
+section.page-container section.captcha {
   @apply flex
   h-screen
   flex-col
@@ -1187,43 +1201,99 @@ section.page-container section.scram {
   justify-center
   p-5;
 }
-section.page-container section.login .wrapper,
-section.page-container section.captcha .wrapper,
-section.page-container section.scram .wrapper {
+section.page-container section.entrance .wrapper,
+section.page-container section.captcha .wrapper {
   @apply mx-auto
   max-w-[435px];
 }
-section.page-container section.login .wrapper header,
-section.page-container section.captcha .wrapper header,
-section.page-container section.scram .wrapper header {
+section.page-container section.entrance .wrapper header,
+section.page-container section.captcha .wrapper header {
   @apply mb-8
   space-y-3;
 }
-section.page-container section.login .wrapper header img,
-section.page-container section.captcha .wrapper header img,
-section.page-container section.scram .wrapper header img {
+section.page-container section.entrance .wrapper header .nvll-logo,
+section.page-container section.captcha .wrapper header .nvll-logo {
   @apply mb-10;
 }
-section.page-container section.login .wrapper form,
-section.page-container section.captcha .wrapper form,
-section.page-container section.scram .wrapper form {
+section.page-container section.entrance .wrapper header img.information,
+section.page-container section.captcha .wrapper header img.information {
+  @apply cursor-pointer
+  ml-1
+  w-4
+  h-4
+  transition-opacity
+  duration-300;
+}
+section.page-container section.entrance .wrapper header .popover .wrapper {
+  @apply p-3
+  space-y-2;
+}
+section.page-container section.entrance .wrapper header .popover .wrapper h4 {
+  @apply font-semibold;
+}
+section.page-container section.entrance .wrapper header .popover .wrapper p {
+  @apply text-sm;
+}
+section.page-container section.entrance .wrapper form,
+section.page-container section.captcha .wrapper form {
   @apply w-full;
 }
-section.page-container section.login .wrapper form .wrapper,
-section.page-container section.captcha .wrapper form .wrapper,
-section.page-container section.scram .wrapper form .wrapper {
+section.page-container section.entrance .wrapper form .wrapper,
+section.page-container section.captcha .wrapper form .wrapper {
   @apply mb-2
   space-y-3;
 }
-section.page-container section.login .wrapper form .wrapper .email-wrapper,
-section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper,
-section.page-container section.scram .wrapper form .wrapper .email-wrapper {
+section.page-container section.entrance .wrapper form .wrapper .email-wrapper,
+section.page-container section.entrance .wrapper form .wrapper .password-wrapper,
+section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper {
   @apply space-y-2
-  mb-4;
+  mb-5;
 }
-section.page-container section.login .wrapper form .wrapper .divider-text,
-section.page-container section.captcha .wrapper form .wrapper .divider-text,
-section.page-container section.scram .wrapper form .wrapper .divider-text {
+section.page-container section.entrance .wrapper form .wrapper .password-wrapper ul.requirements {
+  @apply ml-4
+  space-y-1
+  text-xs;
+}
+section.page-container section.entrance .wrapper form .wrapper .password-wrapper ul.requirements li {
+  @apply flex
+  items-center
+  gap-x-2;
+}
+section.page-container section.entrance .wrapper form .wrapper .password-wrapper ul.requirements li img {
+  @apply size-3;
+}
+section.page-container section.entrance .wrapper form .wrapper .remembered-wrapper {
+  @apply flex;
+}
+section.page-container section.entrance .wrapper form .wrapper .remembered-wrapper header {
+  @apply flex
+  items-center
+  h-6;
+}
+section.page-container section.entrance .wrapper form .wrapper .remembered-wrapper header input[type="checkbox"] {
+  @apply cursor-pointer
+  w-4
+  h-4
+  text-primary
+  border-primary
+  rounded;
+}
+section.page-container section.entrance .wrapper form .wrapper .remembered-wrapper .content {
+  @apply ms-2
+  text-sm;
+}
+section.page-container section.entrance .wrapper form .wrapper .remembered-wrapper .content label {
+  @apply cursor-pointer
+  text-sm
+  font-medium;
+}
+section.page-container section.entrance .wrapper form .wrapper .remembered-wrapper .content p {
+  @apply mt-0
+  text-xs
+  font-normal;
+}
+section.page-container section.entrance .wrapper form .wrapper .divider-text,
+section.page-container section.captcha .wrapper form .wrapper .divider-text {
   @apply py-3
   flex
   items-center
@@ -1235,62 +1305,53 @@ section.page-container section.scram .wrapper form .wrapper .divider-text {
   before:me-6
   after:flex-1
   after:border-t
-  after:ms-6
-  dark:text-neutral-500
-  dark:before:border-neutral-600
-  dark:after:border-neutral-600;
+  after:ms-6;
 }
 section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper span {
   @apply text-blue-800;
 }
-section.page-container section.login .wrapper form .wrapper .email-wrapper label,
-section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper label,
-section.page-container section.scram .wrapper form .wrapper .email-wrapper label {
+section.page-container section.entrance .wrapper form .wrapper .email-wrapper label,
+section.page-container section.entrance .wrapper form .wrapper .password-wrapper label,
+section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper label {
   @apply block
   text-sm
   font-medium
-  mb-2
-  dark:text-white;
+  mb-2;
 }
-section.page-container section.login .wrapper form .wrapper .email-wrapper label .error,
-section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper label .error,
-section.page-container section.scram .wrapper form .wrapper .email-wrapper label .error {
+section.page-container section.entrance .wrapper form .wrapper .email-wrapper label .error,
+section.page-container section.entrance .wrapper form .wrapper .password-wrapper label .error,
+section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper label .error {
   @apply text-sm
   text-red-800;
 }
-section.page-container section.login .wrapper form .wrapper .email-wrapper label .error span,
-section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper label .error span,
-section.page-container section.scram .wrapper form .wrapper .email-wrapper label .error span {
+section.page-container section.entrance .wrapper form .wrapper .email-wrapper label .error span,
+section.page-container section.entrance .wrapper form .wrapper .password-wrapper label .error span,
+section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper label .error span {
   @apply font-bold;
 }
-section.page-container section.login .wrapper form .wrapper .email-wrapper input,
-section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper input,
-section.page-container section.scram .wrapper form .wrapper .email-wrapper input {
+section.page-container section.entrance .wrapper form .wrapper .email-wrapper input,
+section.page-container section.entrance .wrapper form .wrapper .password-wrapper input,
+section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper input {
   @apply py-3
   px-4
   ps-11
   block
   w-full
-  shadow-sm
+  shadow-md
   rounded-lg
   text-sm
   focus:z-10
   focus:border-secondary
   focus:ring-secondary
   disabled:opacity-50
-  disabled:pointer-events-none
-  dark:bg-neutral-900
-  dark:border-neutral-700
-  dark:text-neutral-400
-  dark:placeholder-neutral-500
-  dark:focus:ring-neutral-600;
+  disabled:pointer-events-none;
 }
 section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper input {
   @apply ps-4;
 }
-section.page-container section.login .wrapper form .wrapper .email-wrapper .icon-wrapper,
-section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper .icon-wrapper,
-section.page-container section.scram .wrapper form .wrapper .email-wrapper .icon-wrapper {
+section.page-container section.entrance .wrapper form .wrapper .email-wrapper .icon-wrapper,
+section.page-container section.entrance .wrapper form .wrapper .password-wrapper .icon-wrapper,
+section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper .icon-wrapper {
   @apply absolute
   inset-y-0
   start-0
@@ -1300,19 +1361,27 @@ section.page-container section.scram .wrapper form .wrapper .email-wrapper .icon
   z-20
   ps-4;
 }
-section.page-container section.login .wrapper form .wrapper .email-wrapper .icon-wrapper img,
-section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper .icon-wrapper img,
-section.page-container section.scram .wrapper form .wrapper .email-wrapper .icon-wrapper img {
+section.page-container section.entrance .wrapper form .wrapper .email-wrapper .icon-wrapper img,
+section.page-container section.entrance .wrapper form .wrapper .password-wrapper .icon-wrapper img,
+section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper .icon-wrapper img {
   @apply flex-shrink-0
   size-4
-  text-blue-800
-  dark:text-neutral-600;
+  text-blue-800;
 }
-section.page-container section.login .wrapper .back-wrapper,
-section.page-container section.captcha .wrapper .back-wrapper,
-section.page-container section.scram .wrapper .back-wrapper {
+section.page-container section.entrance .wrapper .back-wrapper,
+section.page-container section.captcha .wrapper .back-wrapper {
   @apply text-center
   mt-7;
+}
+
+@media only screen and (max-width: 640px) {
+  section.page-container section.entrance,
+  section.page-container section.captcha {
+    @apply flex
+    items-start
+    justify-start
+    mt-10;
+  }
 }
 /**!
  * ! END ENTRANCE SECTION -----

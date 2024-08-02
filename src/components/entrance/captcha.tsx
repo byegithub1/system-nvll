@@ -1,4 +1,4 @@
-import IslandsCaptchForm from '../../islands/entrance/captcha-form.tsx'
+import IslandCaptchForm from '../../islands/entrance/captcha-form.tsx'
 
 import { JSX } from 'preact/jsx-runtime'
 import { asset } from '$fresh/runtime.ts'
@@ -15,7 +15,9 @@ export default function Captcha({ props }: Props): JSX.Element {
 			<section class='captcha'>
 				<div class='wrapper'>
 					<header>
-						<img src={asset('/assets/png/nvll-no-pad.png')} alt='NVLL' />
+						<a href='/'>
+							<img src={asset('/assets/png/nvll-no-pad.png')} alt='NVLL' />
+						</a>
 						<h3>Proof of Work CAPTCHA | SIGN {props.code === 404 ? 'UP' : 'IN'}</h3>
 						<p>Hello {username}, we apologize for this.</p>
 						{props.code === 404
@@ -37,7 +39,7 @@ export default function Captcha({ props }: Props): JSX.Element {
 								</p>
 							)}
 					</header>
-					<IslandsCaptchForm props={props} />
+					<IslandCaptchForm props={props} />
 				</div>
 			</section>
 		</main>

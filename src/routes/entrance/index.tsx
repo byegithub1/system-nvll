@@ -1,8 +1,9 @@
 import SystemKv from '../../helpers/database/system-kv.ts'
 import Captcha from '../../components/entrance/captcha.tsx'
-import BackButton from '../../islands/entrance/back-button.tsx'
 import captchaCreator from '../../helpers/utils/captchas/creator.ts'
-import IslandsEntranceForm from '../../islands/entrance/entrance-form.tsx'
+import IslandEntranceForm from '../../islands/entrance/entrance-form.tsx'
+import IslandEntranceBackButton from '../../islands/entrance/back-button.tsx'
+import IslandEntranceHeader from '../../islands/entrance/entrance-header.tsx'
 
 import { JSX } from 'preact/jsx-runtime'
 import { asset } from '$fresh/runtime.ts'
@@ -40,7 +41,7 @@ export default function Entrance({ data }: PageProps<AfterServerDataSchema>): JS
 		case 202: {
 			return (
 				<main class='entrance'>
-					<section class='login'>
+					<section class='entrance'>
 						<div class='wrapper'>
 							<header>
 								<a href='/'>
@@ -61,18 +62,12 @@ export default function Entrance({ data }: PageProps<AfterServerDataSchema>): JS
 		default: {
 			return (
 				<main class='entrance'>
-					<section class='login'>
+					<section class='entrance'>
 						<div class='wrapper'>
-							<header>
-								<a href='/'>
-									<img src={asset('/assets/png/nvll-no-pad.png')} alt='NVLL' />
-								</a>
-								<h3>Entrance | SIGN IN/UP</h3>
-								<p>We'll send a code to your inbox. No need for passwords -- Like Harry Houdini's magic!✨</p>
-							</header>
-							<IslandsEntranceForm props={data} />
+							<IslandEntranceHeader />
+							<IslandEntranceForm props={data} />
 							<div class='back-wrapper'>
-								<BackButton />
+								<IslandEntranceBackButton />
 							</div>
 						</div>
 					</section>

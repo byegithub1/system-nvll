@@ -103,7 +103,7 @@ const useWorker = (captchaData: CaptchaSchema) => {
 	return { state, dispatch, findNonce }
 }
 
-export default function IslandsCaptchForm({ props }: Props): JSX.Element {
+export default function IslandCaptchForm({ props }: Props): JSX.Element {
 	const captchaData: CaptchaSchema = useMemo<CaptchaSchema>(() => props?.data as unknown as CaptchaSchema || {}, [props?.data])
 	const currentDifficulty: number = captchaData.action === '/api/v0/entrance/sign-up' ? captchaData.difficulty.signUp : captchaData.difficulty.signIn
 	const { state, dispatch, findNonce } = useWorker(captchaData)

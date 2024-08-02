@@ -2,7 +2,7 @@ import { JSX } from 'preact/jsx-runtime'
 import { asset } from '$fresh/runtime.ts'
 import { useEffect, useState } from 'preact/hooks'
 
-export default function BackButton(): JSX.Element {
+export default function IslandEntranceBackButton(): JSX.Element {
 	const [mounted, setMounted] = useState<boolean>(false)
 
 	useEffect(() => {

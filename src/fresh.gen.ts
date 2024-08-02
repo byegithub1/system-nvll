@@ -16,6 +16,8 @@ import * as $clipboard from './islands/clipboard.tsx'
 import * as $entrance_back_button from './islands/entrance/back-button.tsx'
 import * as $entrance_captcha_form from './islands/entrance/captcha-form.tsx'
 import * as $entrance_entrance_form from './islands/entrance/entrance-form.tsx'
+import * as $entrance_entrance_header from './islands/entrance/entrance-header.tsx'
+import * as $entrance_password_input from './islands/entrance/password-input.tsx'
 import { type Manifest } from '$fresh/server.ts'
 
 const manifest = {
@@ -36,6 +38,8 @@ const manifest = {
 		'./islands/entrance/back-button.tsx': $entrance_back_button,
 		'./islands/entrance/captcha-form.tsx': $entrance_captcha_form,
 		'./islands/entrance/entrance-form.tsx': $entrance_entrance_form,
+		'./islands/entrance/entrance-header.tsx': $entrance_entrance_header,
+		'./islands/entrance/password-input.tsx': $entrance_password_input,
 	},
 	baseUrl: import.meta.url,
 } satisfies Manifest

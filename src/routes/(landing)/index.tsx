@@ -1,5 +1,5 @@
-import Clipboard from '../../islands/clipboard.tsx'
 import Quote from '../../components/landing/quote.tsx'
+import IslandClipboard from '../../islands/clipboard.tsx'
 import Services from '../../components/landing/services.tsx'
 import Newsletter from '../../components/landing/newsletter.tsx'
 
@@ -41,7 +41,7 @@ export default function Home(): JSX.Element {
 										<span>Terminal</span>
 									</div>
 									<div class='actions'>
-										<Clipboard content='openssl s_client -connect system.nvll.me:1995 -tls1_3 -crlf -ign_eof' />
+										<IslandClipboard content='openssl s_client -connect system.nvll.me:1995 -tls1_3 -crlf -ign_eof' />
 									</div>
 								</div>
 								<pre>openssl s_client -connect system.nvll.me:1995 -tls1_3 -crlf -ign_eof</pre>

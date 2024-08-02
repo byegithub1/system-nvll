@@ -1,6 +1,9 @@
+import forms from '@tailwindcss/forms'
+
 import { type Config } from 'tailwindcss'
 
 export default {
+	plugins: [forms({ strategy: 'base' })],
 	content: [
 		'src/{routes,islands,components}/**/*.{ts,tsx}',
 	],
@@ -9,7 +12,7 @@ export default {
 			colors: {
 				primary: '#000080',
 				secondary: '#2a307f',
-				tertiary: 'radial-gradient(circle farthest-corner at 10% 20%, rgba(242, 235, 243, 1) 0%, rgba(234, 241, 249, 1) 90.1%)',
+				tertiary: '#1c274c',
 				quaternary: '#363755',
 				white: '#ffffff',
 				gray: '#f1f1f1',

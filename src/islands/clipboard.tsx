@@ -2,7 +2,7 @@ import { JSX } from 'preact/jsx-runtime'
 import { asset } from '$fresh/runtime.ts'
 import { useEffect, useState } from 'preact/hooks'
 
-export default function Clipboard(props: { content: string }): JSX.Element {
+export default function IslandClipboard(props: { content: string }): JSX.Element {
 	const [mounted, setMounted] = useState<boolean>(false)
 	const [copied, setCopied] = useState<boolean>(false)
 
