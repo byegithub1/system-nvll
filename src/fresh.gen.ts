@@ -11,13 +11,16 @@ import * as $api_v0_entrance_sign_in from './routes/api/v0/entrance/sign-in.ts'
 import * as $api_v0_entrance_sign_up from './routes/api/v0/entrance/sign-up.ts'
 import * as $api_v0_traffic_jam_index from './routes/api/v0/traffic-jam/index.ts'
 import * as $entrance_layout from './routes/entrance/_layout.tsx'
-import * as $entrance_index from './routes/entrance/index.tsx'
+import * as $entrance_sign_in from './routes/entrance/sign-in.tsx'
+import * as $entrance_sign_up from './routes/entrance/sign-up.tsx'
 import * as $clipboard from './islands/clipboard.tsx'
-import * as $entrance_back_button from './islands/entrance/back-button.tsx'
-import * as $entrance_captcha_form from './islands/entrance/captcha-form.tsx'
-import * as $entrance_entrance_form from './islands/entrance/entrance-form.tsx'
-import * as $entrance_entrance_header from './islands/entrance/entrance-header.tsx'
-import * as $entrance_password_input from './islands/entrance/password-input.tsx'
+import * as $entrance_captcha_form from './islands/entrance/captcha/form.tsx'
+import * as $entrance_sign_in_form from './islands/entrance/sign-in/form.tsx'
+import * as $entrance_sign_in_header from './islands/entrance/sign-in/header.tsx'
+import * as $entrance_sign_in_password_input from './islands/entrance/sign-in/password-input.tsx'
+import * as $entrance_sign_up_form from './islands/entrance/sign-up/form.tsx'
+import * as $entrance_sign_up_header from './islands/entrance/sign-up/header.tsx'
+import * as $entrance_sign_up_password_input from './islands/entrance/sign-up/password-input.tsx'
 import { type Manifest } from '$fresh/server.ts'
 
 const manifest = {
@@ -31,15 +34,18 @@ const manifest = {
 		'./routes/api/v0/entrance/sign-up.ts': $api_v0_entrance_sign_up,
 		'./routes/api/v0/traffic-jam/index.ts': $api_v0_traffic_jam_index,
 		'./routes/entrance/_layout.tsx': $entrance_layout,
-		'./routes/entrance/index.tsx': $entrance_index,
+		'./routes/entrance/sign-in.tsx': $entrance_sign_in,
+		'./routes/entrance/sign-up.tsx': $entrance_sign_up,
 	},
 	islands: {
 		'./islands/clipboard.tsx': $clipboard,
-		'./islands/entrance/back-button.tsx': $entrance_back_button,
-		'./islands/entrance/captcha-form.tsx': $entrance_captcha_form,
-		'./islands/entrance/entrance-form.tsx': $entrance_entrance_form,
-		'./islands/entrance/entrance-header.tsx': $entrance_entrance_header,
-		'./islands/entrance/password-input.tsx': $entrance_password_input,
+		'./islands/entrance/captcha/form.tsx': $entrance_captcha_form,
+		'./islands/entrance/sign-in/form.tsx': $entrance_sign_in_form,
+		'./islands/entrance/sign-in/header.tsx': $entrance_sign_in_header,
+		'./islands/entrance/sign-in/password-input.tsx': $entrance_sign_in_password_input,
+		'./islands/entrance/sign-up/form.tsx': $entrance_sign_up_form,
+		'./islands/entrance/sign-up/header.tsx': $entrance_sign_up_header,
+		'./islands/entrance/sign-up/password-input.tsx': $entrance_sign_up_password_input,
 	},
 	baseUrl: import.meta.url,
 } satisfies Manifest

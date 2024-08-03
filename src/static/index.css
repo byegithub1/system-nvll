@@ -528,7 +528,7 @@ section.page-container section.navbar header .wrapper .right a.support {
   @apply flex
   text-sm;
 }
-section.page-container section.navbar header .wrapper .right a.entrance {
+section.page-container section.navbar header .wrapper .right a.sign-in {
   @apply text-sm
   text-blue-600;
 }
@@ -1192,7 +1192,8 @@ section.page-container .footer .eth-address a img {
 /**!
  * ! ENTRANCE SECTION -----
  */
-section.page-container section.entrance,
+section.page-container section.sign-in,
+section.page-container section.sign-up,
 section.page-container section.captcha {
   @apply flex
   h-screen
@@ -1201,21 +1202,25 @@ section.page-container section.captcha {
   justify-center
   p-5;
 }
-section.page-container section.entrance .wrapper,
+section.page-container section.sign-in .wrapper,
+section.page-container section.sign-up .wrapper,
 section.page-container section.captcha .wrapper {
   @apply mx-auto
   max-w-[435px];
 }
-section.page-container section.entrance .wrapper header,
+section.page-container section.sign-in .wrapper header,
+section.page-container section.sign-up .wrapper header,
 section.page-container section.captcha .wrapper header {
   @apply mb-8
   space-y-3;
 }
-section.page-container section.entrance .wrapper header .nvll-logo,
+section.page-container section.sign-in .wrapper header .nvll-logo,
+section.page-container section.sign-up .wrapper header .nvll-logo,
 section.page-container section.captcha .wrapper header .nvll-logo {
   @apply mb-10;
 }
-section.page-container section.entrance .wrapper header img.information,
+section.page-container section.sign-in .wrapper header img.information,
+section.page-container section.sign-up .wrapper header img.information,
 section.page-container section.captcha .wrapper header img.information {
   @apply cursor-pointer
   ml-1
@@ -1224,53 +1229,63 @@ section.page-container section.captcha .wrapper header img.information {
   transition-opacity
   duration-300;
 }
-section.page-container section.entrance .wrapper header .popover .wrapper {
+section.page-container section.sign-in .wrapper header .popover .wrapper,
+section.page-container section.sign-up .wrapper header .popover .wrapper {
   @apply p-3
   space-y-2;
 }
-section.page-container section.entrance .wrapper header .popover .wrapper h4 {
+section.page-container section.sign-in .wrapper header .popover .wrapper h4,
+section.page-container section.sign-up .wrapper header .popover .wrapper h4 {
   @apply font-semibold;
 }
-section.page-container section.entrance .wrapper header .popover .wrapper p {
+section.page-container section.sign-in .wrapper header .popover .wrapper p,
+section.page-container section.sign-up .wrapper header .popover .wrapper p {
   @apply text-sm;
 }
-section.page-container section.entrance .wrapper form,
+section.page-container section.sign-in .wrapper form,
+section.page-container section.sign-up .wrapper form,
 section.page-container section.captcha .wrapper form {
   @apply w-full;
 }
-section.page-container section.entrance .wrapper form .wrapper,
+section.page-container section.sign-in .wrapper form .wrapper,
+section.page-container section.sign-up .wrapper form .wrapper,
 section.page-container section.captcha .wrapper form .wrapper {
   @apply mb-2
   space-y-3;
 }
-section.page-container section.entrance .wrapper form .wrapper .email-wrapper,
-section.page-container section.entrance .wrapper form .wrapper .password-wrapper,
+section.page-container section.sign-in .wrapper form .wrapper .email-wrapper,
+section.page-container section.sign-in .wrapper form .wrapper .password-wrapper,
+section.page-container section.sign-up .wrapper form .wrapper .recovery-wrapper,
+section.page-container section.sign-up .wrapper form .wrapper .password-wrapper,
 section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper {
   @apply space-y-2
   mb-5;
 }
-section.page-container section.entrance .wrapper form .wrapper .password-wrapper ul.requirements {
+section.page-container section.sign-in .wrapper form .wrapper .password-wrapper ul.requirements,
+section.page-container section.sign-up .wrapper form .wrapper .password-wrapper ul.requirements {
   @apply ml-4
   space-y-1
   text-xs;
 }
-section.page-container section.entrance .wrapper form .wrapper .password-wrapper ul.requirements li {
+section.page-container section.sign-in .wrapper form .wrapper .password-wrapper ul.requirements li,
+section.page-container section.sign-up .wrapper form .wrapper .password-wrapper ul.requirements li {
   @apply flex
   items-center
   gap-x-2;
 }
-section.page-container section.entrance .wrapper form .wrapper .password-wrapper ul.requirements li img {
+section.page-container section.sign-in .wrapper form .wrapper .password-wrapper ul.requirements li img,
+section.page-container section.sign-up .wrapper form .wrapper .password-wrapper ul.requirements li img {
   @apply size-3;
 }
-section.page-container section.entrance .wrapper form .wrapper .remembered-wrapper {
+section.page-container section.sign-in .wrapper form .wrapper .remembered-wrapper {
   @apply flex;
 }
-section.page-container section.entrance .wrapper form .wrapper .remembered-wrapper header {
+section.page-container section.sign-in .wrapper form .wrapper .remembered-wrapper header {
   @apply flex
   items-center
   h-6;
 }
-section.page-container section.entrance .wrapper form .wrapper .remembered-wrapper header input[type="checkbox"] {
+section.page-container section.sign-in .wrapper form .wrapper .remembered-wrapper header input[type="checkbox"] {
   @apply cursor-pointer
   w-4
   h-4
@@ -1278,21 +1293,22 @@ section.page-container section.entrance .wrapper form .wrapper .remembered-wrapp
   border-primary
   rounded;
 }
-section.page-container section.entrance .wrapper form .wrapper .remembered-wrapper .content {
+section.page-container section.sign-in .wrapper form .wrapper .remembered-wrapper .content {
   @apply ms-2
   text-sm;
 }
-section.page-container section.entrance .wrapper form .wrapper .remembered-wrapper .content label {
+section.page-container section.sign-in .wrapper form .wrapper .remembered-wrapper .content label {
   @apply cursor-pointer
   text-sm
   font-medium;
 }
-section.page-container section.entrance .wrapper form .wrapper .remembered-wrapper .content p {
+section.page-container section.sign-in .wrapper form .wrapper .remembered-wrapper .content p {
   @apply mt-0
   text-xs
   font-normal;
 }
-section.page-container section.entrance .wrapper form .wrapper .divider-text,
+section.page-container section.sign-in .wrapper form .wrapper .divider-text,
+section.page-container section.sign-up .wrapper form .wrapper .divider-text,
 section.page-container section.captcha .wrapper form .wrapper .divider-text {
   @apply py-3
   flex
@@ -1310,27 +1326,38 @@ section.page-container section.captcha .wrapper form .wrapper .divider-text {
 section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper span {
   @apply text-blue-800;
 }
-section.page-container section.entrance .wrapper form .wrapper .email-wrapper label,
-section.page-container section.entrance .wrapper form .wrapper .password-wrapper label,
+section.page-container section.sign-in .wrapper form .wrapper .email-wrapper label,
+section.page-container section.sign-in .wrapper form .wrapper .password-wrapper label,
+section.page-container section.sign-up .wrapper form .wrapper .username-wrapper label,
+section.page-container section.sign-up .wrapper form .wrapper .recovery-wrapper label,
+section.page-container section.sign-up .wrapper form .wrapper .password-wrapper label,
 section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper label {
   @apply block
   text-sm
   font-medium
   mb-2;
 }
-section.page-container section.entrance .wrapper form .wrapper .email-wrapper label .error,
-section.page-container section.entrance .wrapper form .wrapper .password-wrapper label .error,
+section.page-container section.sign-in .wrapper form .wrapper .email-wrapper label .error,
+section.page-container section.sign-in .wrapper form .wrapper .password-wrapper label .error,
+section.page-container section.sign-up .wrapper form .wrapper .username-wrapper label .error,
+section.page-container section.sign-up .wrapper form .wrapper .recovery-wrapper label .error,
+section.page-container section.sign-up .wrapper form .wrapper .password-wrapper label .error,
 section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper label .error {
   @apply text-sm
   text-red-800;
 }
-section.page-container section.entrance .wrapper form .wrapper .email-wrapper label .error span,
-section.page-container section.entrance .wrapper form .wrapper .password-wrapper label .error span,
+section.page-container section.sign-in .wrapper form .wrapper .email-wrapper label .error span,
+section.page-container section.sign-in .wrapper form .wrapper .password-wrapper label .error span,
+section.page-container section.sign-up .wrapper form .wrapper .username-wrapper label .error span,
+section.page-container section.sign-up .wrapper form .wrapper .recovery-wrapper label .error span,
+section.page-container section.sign-up .wrapper form .wrapper .password-wrapper label .error span,
 section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper label .error span {
   @apply font-bold;
 }
-section.page-container section.entrance .wrapper form .wrapper .email-wrapper input,
-section.page-container section.entrance .wrapper form .wrapper .password-wrapper input,
+section.page-container section.sign-in .wrapper form .wrapper .email-wrapper input,
+section.page-container section.sign-in .wrapper form .wrapper .password-wrapper input,
+section.page-container section.sign-up .wrapper form .wrapper .recovery-wrapper input,
+section.page-container section.sign-up .wrapper form .wrapper .password-wrapper input,
 section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper input {
   @apply py-3
   px-4
@@ -1346,11 +1373,59 @@ section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper i
   disabled:opacity-50
   disabled:pointer-events-none;
 }
+section.page-container section.sign-in .wrapper form .wrapper .email-wrapper .input-footer,
+section.page-container section.sign-in .wrapper form .wrapper .password-wrapper .input-footer,
+section.page-container section.sign-up .wrapper form .wrapper .username-wrapper .input-footer,
+section.page-container section.sign-up .wrapper form .wrapper .recovery-wrapper .input-footer,
+section.page-container section.sign-up .wrapper form .wrapper .password-wrapper .input-footer,
+section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper .input-footer {
+  @apply text-end
+  text-xs;
+}
+section.page-container section.sign-in .wrapper form .wrapper .email-wrapper .input-footer p,
+section.page-container section.sign-in .wrapper form .wrapper .password-wrapper .input-footer p,
+section.page-container section.sign-up .wrapper form .wrapper .username-wrapper .input-footer p,
+section.page-container section.sign-up .wrapper form .wrapper .recovery-wrapper .input-footer p,
+section.page-container section.sign-up .wrapper form .wrapper .password-wrapper .input-footer p,
+section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper .input-footer p {
+  @apply text-xs
+  text-gray-100;
+}
+section.page-container section.sign-up .wrapper form .wrapper .username-wrapper input {
+  @apply py-3
+  px-4
+  ps-9
+  pe-[73.5px]
+  block
+  w-full
+  shadow-md
+  rounded-lg
+  text-sm
+  text-end
+  focus:z-10
+  focus:border-secondary
+  focus:ring-secondary
+  disabled:opacity-50
+  disabled:pointer-events-none;
+}
 section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper input {
   @apply ps-4;
 }
-section.page-container section.entrance .wrapper form .wrapper .email-wrapper .icon-wrapper,
-section.page-container section.entrance .wrapper form .wrapper .password-wrapper .icon-wrapper,
+
+section.page-container section.sign-up .wrapper form .wrapper .username-wrapper .icon-wrapper {
+  @apply absolute
+  inset-y-0
+  end-0
+  flex
+  items-center
+  pointer-events-none
+  z-20
+  pe-4;
+}
+section.page-container section.sign-in .wrapper form .wrapper .email-wrapper .icon-wrapper,
+section.page-container section.sign-in .wrapper form .wrapper .password-wrapper .icon-wrapper,
+section.page-container section.sign-up .wrapper form .wrapper .recovery-wrapper .icon-wrapper,
+section.page-container section.sign-up .wrapper form .wrapper .password-wrapper .icon-wrapper,
 section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper .icon-wrapper {
   @apply absolute
   inset-y-0
@@ -1361,21 +1436,25 @@ section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper .
   z-20
   ps-4;
 }
-section.page-container section.entrance .wrapper form .wrapper .email-wrapper .icon-wrapper img,
-section.page-container section.entrance .wrapper form .wrapper .password-wrapper .icon-wrapper img,
+section.page-container section.sign-in .wrapper form .wrapper .email-wrapper .icon-wrapper img,
+section.page-container section.sign-in .wrapper form .wrapper .password-wrapper .icon-wrapper img,
+section.page-container section.sign-up .wrapper form .wrapper .username-wrapper .icon-wrapper img,
+section.page-container section.sign-up .wrapper form .wrapper .recovery-wrapper .icon-wrapper img,
+section.page-container section.sign-up .wrapper form .wrapper .password-wrapper .icon-wrapper img,
 section.page-container section.captcha .wrapper form .wrapper .captcha-wrapper .icon-wrapper img {
   @apply flex-shrink-0
   size-4
   text-blue-800;
 }
-section.page-container section.entrance .wrapper .back-wrapper,
+section.page-container section.sign-in .wrapper .back-wrapper,
+section.page-container section.sign-up .wrapper .back-wrapper,
 section.page-container section.captcha .wrapper .back-wrapper {
   @apply text-center
   mt-7;
 }
-
 @media only screen and (max-width: 640px) {
-  section.page-container section.entrance,
+  section.page-container section.sign-in,
+  section.page-container section.sign-up,
   section.page-container section.captcha {
     @apply flex
     items-start

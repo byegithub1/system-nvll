@@ -12,7 +12,7 @@ export default function socket(request: Request): Response {
 		}
 		socket.onmessage = (event: MessageEvent<string>): void => {
 			// Handle incoming messages.
-			console.log('+OK ws received message:', event.data)
+			console.log(JSON.parse(event.data))
 		}
 		socket.onclose = (_event: Event): void => {
 			// Handle connection close.

@@ -26,7 +26,8 @@ interface PasswordRequirement {
 	text: string
 }
 
-function IslandPasswordInput({ password }: Props): JSX.Element {
+export default function IslandSignInPasswordInput({ password }: Props): JSX.Element {
+	const [showPassword, setShowPassword] = useState<boolean>(false)
 	const [requirement, setRequirement] = useState<Requirement>({
 		length: false,
 		lowercase: false,
@@ -61,7 +62,7 @@ function IslandPasswordInput({ password }: Props): JSX.Element {
 			</label>
 			<div class='relative'>
 				<input
-					type='password'
+					type={showPassword ? 'text' : 'password'}
 					id='password'
 					name='password'
 					value={password.value.value}
@@ -70,13 +71,24 @@ function IslandPasswordInput({ password }: Props): JSX.Element {
 				/>
 				<div class='icon-wrapper'>
 					<img
-						src={asset(password.value.message ? '/assets/svg/key-minimalistic-red.svg' : '/assets/svg/key-minimalistic.svg')}
+						src={asset(
+							showPassword
+								? `/assets/svg/eye-open${password.value.message ? '-red' : ''}.svg`
+								: `/assets/svg/eye-closed${password.value.message ? '-red' : ''}.svg`,
+						)}
 						alt='Password'
 						loading='lazy'
 					/>
 				</div>
 			</div>
-			<ul class='requirements'>
+
+			<div className='text-end'>
+				<button class='text-xs text-primary cursor-pointer' type='button' onClick={() => setShowPassword(!showPassword)}>
+					{showPassword ? 'Hide' : 'Show'}
+				</button>
+			</div>
+
+			<ul class='requirements !-mt-4'>
 				{passwordRequirements.map(({ key, text }) => (
 					<li key={key} class={`${requirement[key] ? 'text-green-700' : 'text-red-800'}`}>
 						{requirement[key]
@@ -89,5 +101,3 @@ function IslandPasswordInput({ password }: Props): JSX.Element {
 		</div>
 	)
 }
-
-export default IslandPasswordInput

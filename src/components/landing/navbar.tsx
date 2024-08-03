@@ -16,9 +16,9 @@ export default function Navbar(): JSX.Element {
 						<a href='mailto:support@nvll.me' class='support'>
 							ask@nvll.me
 						</a>
-						<a href='/entrance' class='entrance'>
-							<button class='button-primary' type='button' title='Entrance'>
-								Entrance
+						<a href='/entrance/sign-in' class='entrance'>
+							<button class='button-primary' type='button' title='SIGN IN'>
+								SIGN IN
 							</button>
 						</a>
 					</div>

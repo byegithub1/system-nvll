@@ -1,9 +1,8 @@
 import SystemKv from '../../helpers/database/system-kv.ts'
 import Captcha from '../../components/entrance/captcha.tsx'
 import captchaCreator from '../../helpers/utils/captchas/creator.ts'
-import IslandEntranceForm from '../../islands/entrance/entrance-form.tsx'
-import IslandEntranceBackButton from '../../islands/entrance/back-button.tsx'
-import IslandEntranceHeader from '../../islands/entrance/entrance-header.tsx'
+import IslandSignInForm from '../../islands/entrance/sign-in/form.tsx'
+import IslandSignInHeader from '../../islands/entrance/sign-in/header.tsx'
 
 import { JSX } from 'preact/jsx-runtime'
 import { asset } from '$fresh/runtime.ts'
@@ -32,7 +31,7 @@ export const handler: Handlers<AfterServerDataSchema> = {
 	},
 }
 
-export default function Entrance({ data }: PageProps<AfterServerDataSchema>): JSX.Element {
+export default function SignIn({ data }: PageProps<AfterServerDataSchema>): JSX.Element {
 	switch (data.code) {
 		case 404:
 		case 429: {
@@ -40,8 +39,8 @@ export default function Entrance({ data }: PageProps<AfterServerDataSchema>): JS
 		}
 		case 202: {
 			return (
-				<main class='entrance'>
-					<section class='entrance'>
+				<main class='sign-in'>
+					<section class='sign-in'>
 						<div class='wrapper'>
 							<header>
 								<a href='/'>
@@ -61,14 +60,11 @@ export default function Entrance({ data }: PageProps<AfterServerDataSchema>): JS
 		}
 		default: {
 			return (
-				<main class='entrance'>
-					<section class='entrance'>
+				<main class='sign-in'>
+					<section class='sign-in'>
 						<div class='wrapper'>
-							<IslandEntranceHeader />
-							<IslandEntranceForm props={data} />
-							<div class='back-wrapper'>
-								<IslandEntranceBackButton />
-							</div>
+							<IslandSignInHeader />
+							<IslandSignInForm />
 						</div>
 					</section>
 				</main>
