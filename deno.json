@@ -55,5 +55,5 @@
 	},
 	"compilerOptions": { "types": ["./definition.d.ts"], "jsx": "react-jsx", "jsxImportSource": "preact" },
 	"nodeModulesDir": false,
-	"deploy": { "project": "c86c6599-942c-486e-9e40-84931bf51e86", "exclude": ["**/node_modules"], "include": [], "entrypoint": "src\\main.ts" }
+	"deploy": { "project": "system-nvll", "exclude": ["**/node_modules"], "include": [], "entrypoint": "src\\main.ts" }
 }
