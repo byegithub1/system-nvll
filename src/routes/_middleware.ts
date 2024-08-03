@@ -6,10 +6,13 @@ import worker from '../helpers/utils/middlewares/worker.ts'
 import SystemKv, { ulid } from '../helpers/database/system-kv.ts'
 
 import { FreshContext } from '$fresh/server.ts'
-import { encodeHex } from '$std/encoding/hex.ts'
+import { schnorr } from '@noble/curves/secp256k1'
+import { randomBytes } from '@noble/ciphers/webcrypto'
+import { bytesToHex, hexToBytes } from '@noble/curves/abstract/utils'
 
 export class AppContext {
 	public readonly system_id: string
+	public pubkeys: Map<string, string> = new Map()
 
 	private static instance: AppContext
 	private ready: boolean = false
@@ -55,17 +58,30 @@ export class AppContext {
 
 		console.log('System NVLL initialization...')
 		try {
-			const system: Deno.KvCommitResult = await SystemKv.set(['system_nvll', 'systems', this.system_id], {
-				ulid: ulid(),
-				keys: {
-					// Rotates the HMAC SHA-512 key every application start or restart.
-					hmac: encodeHex(crypto.getRandomValues(new Uint8Array(64))),
-				},
-			} as SystemSchema)
-
-			if (system.ok) console.log('+OK hmac sha-512 key rotated')
-
+			const cache: Deno.KvEntry<SystemSchema> = await SystemKv.get(['system_nvll', 'systems', this.system_id]) as Deno.KvEntry<SystemSchema>
 			console.log('+OK database established')
+			if (!cache.value) {
+				const newSystem: SystemSchema = {
+					ulid: ulid(),
+					keys: {
+						hmac: bytesToHex(crypto.getRandomValues(randomBytes(32))),
+						schnorr: bytesToHex(schnorr.utils.randomPrivateKey()),
+					},
+				}
+
+				const system: Deno.KvCommitResult = await SystemKv.set(['system_nvll', 'systems', this.system_id], newSystem)
+
+				if (system.ok) {
+					console.log('+OK hmac sha-512 key rotated')
+					console.log('+OK schnorr secp256k1 key rotated')
+				}
+
+				this.pubkeys.set('hmac', newSystem.keys.hmac)
+				this.pubkeys.set('schnorr', bytesToHex(schnorr.getPublicKey(hexToBytes(newSystem.keys.schnorr))))
+			} else {
+				this.pubkeys.set('hmac', cache.value.keys.hmac)
+				this.pubkeys.set('schnorr', bytesToHex(schnorr.getPublicKey(hexToBytes(cache.value.keys.schnorr))))
+			}
 
 			await new Promise((resolve) => setTimeout(resolve, 2000))
 

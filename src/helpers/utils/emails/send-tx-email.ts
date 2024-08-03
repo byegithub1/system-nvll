@@ -39,7 +39,7 @@ export default async function sendTxEmail<T extends TxEmailTemplateData>(system_
 	}
 
 	const renderedTemplate: string = await template.render(templateData)
-	const emailData: Mail.options = {
+	const emailData: Mail.Options = {
 		from,
 		to,
 		subject: template.subject,

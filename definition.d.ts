@@ -86,6 +86,7 @@ declare global {
 		ulid: string
 		keys: {
 			hmac: string
+			schnorr: string
 		}
 	}
 

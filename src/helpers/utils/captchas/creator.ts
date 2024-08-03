@@ -25,7 +25,7 @@ export default async function creator(remoteIp: string, email: string, action: s
 		ulid: ulid(),
 		email,
 		challenge: encodeBase64Url(crypto.getRandomValues(new Uint8Array(24))),
-		timestamp: Math.floor(Date.now() / 1000),
+		timestamp: Math.trunc(Date.now() / 1000),
 	}
 
 	return {
