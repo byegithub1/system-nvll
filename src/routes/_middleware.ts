@@ -1,5 +1,5 @@
+import text from '../helpers/utils/middlewares/text.ts'
 import route from '../helpers/utils/middlewares/route.ts'
-import text from '../helpers/utils/middlewares/worker.ts'
 import socket from '../helpers/utils/middlewares/socket.ts'
 import worker from '../helpers/utils/middlewares/worker.ts'
 
@@ -123,8 +123,8 @@ export async function handler(request: Request, ctx: FreshContext<SystemState>):
 			const response: Response = await ctx.next()
 			const workerPathname: boolean = url.pathname.startsWith('/workers/')
 			const jsFile: boolean = url.pathname.endsWith('.js')
-			const pgpPathname: boolean = url.pathname.startsWith('/assets/pgp/')
 			const ascFile: boolean = url.pathname.endsWith('.asc')
+			const txtFile: boolean = url.pathname.endsWith('.txt')
 
 			const staticProps: MiddlewareStaticProps = {
 				response,
@@ -134,7 +134,7 @@ export async function handler(request: Request, ctx: FreshContext<SystemState>):
 				startTime,
 			}
 
-			if (pgpPathname && ascFile) return text(staticProps)
+			if (txtFile || ascFile) return text(staticProps)
 			if (workerPathname && jsFile) return worker(staticProps)
 
 			return response

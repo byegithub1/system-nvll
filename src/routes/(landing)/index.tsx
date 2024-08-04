@@ -86,7 +86,7 @@ export default function Home(): JSX.Element {
 						<div class='author'>
 							<small>
 								<span>Created by&nbsp;</span>
-								<a href='mailto:re@nvll.me' target='_blank' rel='noopener noreferrer nofollow'>rvnrstnsyh</a>
+								<a href='/readme.asc'>rvnrstnsyh</a>
 							</small>
 						</div>
 					</div>

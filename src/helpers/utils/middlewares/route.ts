@@ -3,6 +3,9 @@ import SystemKv from '../../database/system-kv.ts'
 import { uuidv7 } from '../uuidv7.ts'
 import { data } from '../responses.ts'
 import { sentinel } from '../sentinel.ts'
+import { load } from '$std/dotenv/mod.ts'
+
+const env: Record<string, string> = await load({ envPath: '.env', export: true })
 
 const PROTECTED_METHODS: ReadonlySet<string> = new Set(['POST', 'PUT', 'DELETE', 'PATCH'])
 const OPEN_METHODS: ReadonlySet<string> = new Set(['GET', 'HEAD', 'OPTIONS', 'CONNECT', 'TRACE'])
@@ -13,6 +16,25 @@ const OPEN_METHODS: ReadonlySet<string> = new Set(['GET', 'HEAD', 'OPTIONS', 'CO
  * @return {Promise<Response>} A promise that resolves to a Response object.
  */
 export default async function route({ request, ctx, url, remoteIp, startTime }: MiddlewareRouteProps): Promise<Response> {
+	const authorization: string | null = request.headers.get('Authorization')
+
+	const unauthorizedResponse = () =>
+		new Response('-ERR 401 unauthorized', {
+			status: 401,
+			headers: { 'WWW-Authenticate': 'Basic realm="Restricted"' },
+		})
+
+	if (env['APP_ENV'].startsWith('dev')) {
+		if (!authorization) return unauthorizedResponse()
+
+		try {
+			const [username, password]: string[] = atob(authorization.split(' ')[1]).split(':')
+			if (username !== 'preview' || password !== 'allow-me') return unauthorizedResponse()
+		} catch (_error) {
+			return unauthorizedResponse()
+		}
+	}
+
 	const method: string = request.method
 	const trafficJam: boolean = PROTECTED_METHODS.has(method) || !OPEN_METHODS.has(method)
 
